@@ -6,13 +6,17 @@ module.exports = {
         user: '',
         password: ''
     },
-
+    mongodb: {
+        hosts: ['127.0.0.1'],
+        db: 'openhabyandex',
+        user: '',
+        password: ''
+    },
     https: {
         privateKey: '/mnt/data/root/node-key2.pem',
         certificate: '/mnt/data/root/munrexio.crt',
         port: 443
     },
-
     clients: [
     {
         id: '1',
@@ -22,7 +26,6 @@ module.exports = {
         isTrusted: false
         },
     ],
-
     users: [{
             id: '1',
             username: 'admin',
@@ -36,9 +39,8 @@ module.exports = {
             name: 'Administrator'
         },
     ],
-
     devices: [
-    //_______________Первое устройство______________//
+    //__First device__//
         {
             name: 'Свет',
             room: 'Комната',
@@ -110,9 +112,7 @@ module.exports = {
                 },
             ]
         },
-    //__________Конец первого устройства__________//
-    
-
+    //__END First device__//
 
     // ________ Второе устройство___________//
         {
