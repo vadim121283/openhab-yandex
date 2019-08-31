@@ -5,3 +5,4 @@ yarn-error.log
 .env
 .idea/
 config.js
+loki.json
