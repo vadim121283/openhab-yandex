@@ -1,12 +1,12 @@
 {
   "name": "openhab-yandex",
   "version": "0.1.0",
-  "repository": "https://github.com/munrexio/yandex2mqtt.git",
+  "repository": "https://github.com/vadim121283/openhab-yandex.git",
   "license": "MIT",
   "contributors": [
     {
-      "name": "Munrexio",
-      "url": "https://github.com/munrexio"
+      "name": "vadim121283",
+      "url": "https://github.com/vadim121283"
     }
   ],
   "scripts": {
@@ -23,6 +23,7 @@
     "express-session": "^1.15.2",
     "https": "^1.0.0",
     "lokijs": "^1.5.6",
+    "mongoose": "^5.6.11",
     "mqtt": "^3.0.0",
     "mqtt-packet": "^6.1.2",
     "oauth2orize": "^1.8.0",

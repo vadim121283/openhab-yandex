@@ -17,7 +17,7 @@ class device {
   getInfo() {
     return this.data;
   };
-  
+
 
   findDevIndex(arr, elem) {
     for (var i = 0; i < arr.length; i++) {
@@ -28,11 +28,9 @@ class device {
     return false;
 };
 
-
-
   setState(val, type, inst) {
-    var int;   
-    var topic; 
+    var int;
+    var topic;
     switch (inst) {
       case 'on':
           try {
@@ -40,9 +38,9 @@ class device {
             this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.instance = inst;
             this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.value = val;
             topic = this.data.custom_data.mqtt[this.findDevIndex(this.data.custom_data.mqtt, inst)].set || false;
-            break; 
-          } 
-          catch (err) {              
+            break;
+          }
+          catch (err) {
             topic = false;
             console.log(err);
           }
@@ -52,23 +50,23 @@ class device {
             this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.instance = inst;
             this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.value = val;
             topic = this.data.custom_data.mqtt[this.findDevIndex(this.data.custom_data.mqtt, inst)].set || false;
-            break; 
-          } 
-          catch (err) {              
+            break;
+          }
+          catch (err) {
             topic = false;
             console.log(err);
-          }          
+          }
       default:
           try {
             int = JSON.stringify(val);
             this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.instance = inst;
             this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.value = val;
-            topic = this.data.custom_data.mqtt[this.findDevIndex(this.data.custom_data.mqtt, inst)].set || false; 
-          } 
-          catch (err) {              
+            topic = this.data.custom_data.mqtt[this.findDevIndex(this.data.custom_data.mqtt, inst)].set || false;
+          }
+          catch (err) {
             topic = false;
             console.log(err);
-          }  
+          }
     };
 
     if (topic) {

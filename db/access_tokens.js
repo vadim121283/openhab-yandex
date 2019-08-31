@@ -30,7 +30,7 @@ module.exports.findByUserIdAndClientId = (userId, clientId, done) => {
 
 module.exports.save = (token, userId, clientId, done) => {
   console.log('Start saving token');
-  tokens[token] = { userId, clientId }; 
+  tokens[token] = { userId, clientId };
   var ltoken1 = global.authl.findOne( {'userId': userId} );
   if(ltoken1){
     console.log(ltoken1.userId);
@@ -62,7 +62,7 @@ function loadTokenByUserId(userId, done) {
   }else{
     console.log('User not found');
     return;
-  }  
+  }
 };
 
 function loadToken(token, done) {
@@ -76,5 +76,5 @@ function loadToken(token, done) {
   }else{
     console.log('Token not found');
     return;
-  }  
+  }
 };
