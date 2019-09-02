@@ -1,5 +1,6 @@
 'use strict';
 
+// Выдаем данные клиента
 const passport = require('passport');
 
 module.exports.info = [

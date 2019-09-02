@@ -2,6 +2,7 @@
 
 const passport = require('passport');
 
+// Информация по пользователю
 module.exports.info = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
@@ -18,6 +19,7 @@ module.exports.ping = [
   }
 ];
 
+// Выдача массива devices
 module.exports.devices = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
@@ -31,12 +33,12 @@ module.exports.devices = [
   for (var i in global.devices) {
     r.payload.devices.push(global.devices[i].getInfo());
   }
-  
+
   response.status(200);
   response.send(r);
   }
 ];
-
+// Выдача состояния устройств
 module.exports.query = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
@@ -53,6 +55,7 @@ module.exports.query = [
   }
 ];
 
+// Изменение состояния устройств
 module.exports.action = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
@@ -67,18 +70,18 @@ module.exports.action = [
     try {
 
         var capabilities = global.devices[id].setState(request.body.payload.devices[i].capabilities[0].state.value , request.body.payload.devices[i].capabilities[0].type, request.body.payload.devices[i].capabilities[0].state.instance);
-           
+
     } catch (err) {
 
         var capabilities = global.devices[id].setState(true , request.body.payload.devices[i].capabilities[0].type, 'mute');
     }
-    
+
     r.payload.devices.push({ id: id, capabilities: capabilities });
   }
   response.send(r);
   }
 ];
-
+// Отключение пользователя разъединение аккаунтов
 module.exports.unlink = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {

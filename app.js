@@ -21,21 +21,27 @@ const credentials = {
     key: privateKey,
     cert: certificate
 };
+// HTTPS server
 const httpsServer = https.createServer(credentials, app);
+
+// Массив устройств
 global.devices = [];
 
+// Создаем класс device для всех устройств в конфиг файле
 if (config.devices) {
     config.devices.forEach(opts => {
         new device(opts);
     });
 }
 
+// MQTT соединение
 const client = mqtt.connect(`mqtt://${config.mqtt.host}`, {
     port: config.mqtt.port,
     username: config.mqtt.user,
     password: config.mqtt.password
 });
 
+// Запуск Express
 app.engine('ejs', ejs.__express);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './views'));
@@ -56,7 +62,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport configuration
+// Passport configuration API urls
 require('./auth');
 app.get('/', routes.site.index);
 app.get('/login', routes.site.loginForm);
@@ -76,7 +82,7 @@ app.post('/provider/v1.0/user/devices/action', routes.user.action);
 app.post('/provider//v1.0/user/unlink', routes.user.unlink);
 httpsServer.listen(config.https.port);
 
-
+// Для определения индекса capabilities
 function findDevIndex(arr, elem) {
     for (var i = 0; i < arr.length; i++) {
         if (arr[i].type === elem) {
@@ -86,9 +92,10 @@ function findDevIndex(arr, elem) {
     return false;
 }
 
-
+// Массив для хранения топиков mqtt
 const statPairs = [];
 
+// Загрузка массива для топиков
 global.devices.forEach(device => {
     device.client = client;
     device.data.custom_data.mqtt.forEach(mqtt => {
@@ -104,6 +111,7 @@ global.devices.forEach(device => {
     });
 });
 
+// Если массив не пустой, то подписываемся на топик mqtt
 if (statPairs) {
     client.on('connect', () => {
         client.subscribe(statPairs.map(pair => pair.topic));
@@ -111,6 +119,7 @@ if (statPairs) {
             const matchedDeviceId = statPairs.findIndex(pair => topic.toLowerCase() === pair.topic.toLowerCase());
             if (matchedDeviceId == -1) return;
 
+            // Выбираем тип устройства для формирования топика или наоборот
             const device = global.devices.find(device => device.data.id == statPairs[matchedDeviceId].deviceId);
             var devindx;
             switch (statPairs[matchedDeviceId].topicType) {
@@ -158,7 +167,7 @@ if (statPairs) {
                     } catch (err) {
                         console.log(err);
                     }
-                    break;        
+                    break;
                 case 'thermostat':
                     try {
                         devindx = findDevIndex(device.data.capabilities, 'devices.capabilities.mode')
@@ -176,7 +185,7 @@ if (statPairs) {
                     } catch (err) {
                         console.log(err);
                     }
-                    break;    
+                    break;
                 case 'brightness':
                     try {
                         devindx = findDevIndex(device.data.capabilities, 'devices.capabilities.range')
@@ -212,7 +221,7 @@ if (statPairs) {
                     } catch (err) {
                         console.log(err);
                     }
-                    break;                        
+                    break;
                 default:
                     console.log('Unknown topic Type: ' + statPairs[matchedDeviceId].topicType);
             };

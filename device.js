@@ -1,3 +1,4 @@
+// Для создания массива данных в формате Yandex, можно сразу ему их выдавать.
 class device {
   constructor(options) {
     var id = global.devices.length;

@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 
 var DeviceSchema = new Schema({
-    id: ObjectId,
+    _id: ObjectId,
     name: String,                               // Random name Ru
     room: String,                               // Room name Ru
     type: String,   // Yandex Device Type devices.types.light
@@ -62,7 +62,6 @@ var DeviceSchema = new Schema({
     created: { type: Date, default: Date.now }  // When client was created
 });
 
-DeviceSchema.index({id: 1}, { unique: true }); // to find client by id
 DeviceSchema.index({yDeviceId: 1}, { unique: false }); // to find client by yDeviceId
 
 module.exports = mongoose.model('Device', DeviceSchema);

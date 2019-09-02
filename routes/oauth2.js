@@ -1,3 +1,4 @@
+/* Для создания и выдачи токенов */
 'use strict';
 
 const oauth2orize = require('@poziworld/oauth2orize');
@@ -156,6 +157,8 @@ server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => 
 // authorization). We accomplish that here by routing through `ensureLoggedIn()`
 // first, and rendering the `dialog` view.
 
+// Тут выдача токенов
+
 module.exports.authorization = [
   login.ensureLoggedIn(),
   server.authorization((clientId, redirectUri, done) => {
@@ -169,14 +172,14 @@ module.exports.authorization = [
     });
   }, (client, user, done) => {
     // Check if grant request qualifies for immediate approval
-    
+
     // Auto-approve
     if (client.isTrusted) return done(null, true);
-    
+
     db.accessTokens.findByUserIdAndClientId(user.id, client.clientId, (error, token) => {
       // Auto-approve
       if (token) return done(null, true);
-      
+
       // Otherwise ask user
       return done(null, false);
     });

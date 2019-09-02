@@ -1,6 +1,15 @@
 'use strict';
-
+const config = require('../config');
+var mongoose = require('mongoose');
+var Token = require('../models/token');
 const tokens = {};
+
+mongoose.connect(getMongoUri(), function (err) {
+    if (err) throw err;
+    console.log('MongoDB Successfully connected');
+
+});
+
 const loki = require('lokijs');
 global.dbl = new loki('./loki.json', {
   autoload: true,
@@ -77,4 +86,11 @@ function loadToken(token, done) {
     console.log('Token not found');
     return;
   }
+};
+
+function getMongoUri() {
+    var mongoUri = 'mongodb://';
+    mongoUri += config.mongodb.hosts;
+    console.log('MongoDB mongoUri: ' + mongoUri);
+    return mongoUri + '/' + config.mongodb.db;
 };

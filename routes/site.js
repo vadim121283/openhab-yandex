@@ -1,10 +1,11 @@
 'use strict';
 
+// Что пишет сервер на своих страницах браузера
 const passport = require('passport');
 const login = require('connect-ensure-login');
-
-module.exports.index = (request, response) => response.send('OAuth 2.0 Server');
-
+// Главная страница
+module.exports.index = (request, response) => response.send('knopkadom.ru OAuth 2.0 Server');
+// Переход на view login
 module.exports.loginForm = (request, response) => response.render('login');
 
 module.exports.login = passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/login' });
