@@ -41,8 +41,8 @@ passport.deserializeUser((id, done) => {
  * to the `Authorization` header). While this approach is not recommended by
  * the specification, in practice it is quite common.
  */
-function verifyClient(clientId, clientSecret, done) {
-  db.clients.findByClientId(clientId, (error, client) => {
+function verifyClient(yClientId, clientSecret, done) {
+  db.clients.findByYClientId(yClientId, (error, client) => {
     if (error) return done(error);
     if (!client) return done(null, false);
     if (client.clientSecret !== clientSecret) return done(null, false);
@@ -78,7 +78,7 @@ passport.use(new BearerStrategy(
       } else {
         // The request came from a client only since userId is null,
         // therefore the client is passed back instead of a user.
-        db.clients.findByClientId(token.clientId, (error, client) => {
+        db.clients.findByYClientId(token.yClientId, (error, client) => {
           if (error) return done(error);
           if (!client) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,

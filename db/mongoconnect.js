@@ -52,7 +52,7 @@ MongoConnect.prototype.defaultCallback = function (error) {
  * @private
  */
 MongoConnect.prototype.getMongoUri = function () {
-    var mongoUri = 'mongodb://';
+    let mongoUri = 'mongodb://';
 
     // if (this.system.hasDbCredentials()){
     //      mongoUri += this.system.getDbUser() + ':' + this.system.getDbPass() + '@';
@@ -70,7 +70,7 @@ MongoConnect.prototype.getMongoUri = function () {
  * @private
  */
 MongoConnect.prototype.getMongoHostAndDatabase = function () {
-    var mongoUri = 'mongodb://';
+    let mongoUri = 'mongodb://';
 
     mongoUri += config.mongodb.hosts;
 

@@ -54,3 +54,23 @@ Client.findByIdAndUpdate('5d6bfa4c874bf515c4b8db6c', { name: 'YandexDialog1' }, 
 
     console.log('Updated this: ' + client.name);
 });
+
+
+// Найти по Id
+
+function findCli(id){
+    Client.findById(id, function (err, client) {
+        if (err) throw err;
+        console.log('First:' + client.name);
+        return client;
+    });
+}
+
+async function findCli2(id){
+    var client = Client.findById(id, function (err, client) {
+        if (err) throw err;
+        console.log('First:' + client.name);
+        return client;
+    }).exec();
+    return client;
+}

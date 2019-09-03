@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 keys/
+test/
 npm-debug.log
 yarn-error.log
 .env

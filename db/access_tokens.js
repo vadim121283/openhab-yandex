@@ -29,10 +29,10 @@ module.exports.find = (key, done) => {
   return done(new Error('Token Not Found'));
 };
 
-module.exports.findByUserIdAndClientId = (userId, clientId, done) => {
+module.exports.findByUserIdAndYClientId = (userId, yClientId, done) => {
   loadTokenByUserId(userId);
   for (const token in tokens) {
-    if (tokens[token].userId === userId && tokens[token].clientId === clientId) return done(null, token);
+    if (tokens[token].userId === userId && tokens[token].clientId === yClientId) return done(null, token);
   }
   return done(new Error('Token Not Found'));
 };

@@ -99,7 +99,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
 
 server.exchange(oauth2orize.exchange.password((client, username, password, scope, done) => {
   // Validate the client
-  db.clients.findByClientId(client.clientId, (error, localClient) => {
+  db.clients.findByYClientId(client.yClientId, (error, localClient) => {
     if (error) return done(error);
     if (!localClient) return done(null, false);
     if (localClient.clientSecret !== client.clientSecret) return done(null, false);
@@ -110,7 +110,7 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
       if (password !== user.password) return done(null, false);
       // Everything validated, return the token
       const token = utils.getUid(256);
-      db.accessTokens.save(token, user.id, client.clientId, (error) => {
+      db.accessTokens.save(token, user.id, client.yClientId, (error) => {
         if (error) return done(error);
         // Call `done(err, accessToken, [refreshToken], [params])`, see oauth2orize.exchange.code
         return done(null, token);
@@ -126,14 +126,14 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
 
 server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => {
   // Validate the client
-  db.clients.findByClientId(client.clientId, (error, localClient) => {
+  db.clients.findByYClientId(client.yClientId, (error, localClient) => {
     if (error) return done(error);
     if (!localClient) return done(null, false);
     if (localClient.clientSecret !== client.clientSecret) return done(null, false);
     // Everything validated, return the token
     const token = utils.getUid(256);
     // Pass in a null for user id since there is no user with this grant type
-    db.accessTokens.save(token, null, client.clientId, (error) => {
+    db.accessTokens.save(token, null, client.yClientId, (error) => {
       if (error) return done(error);
       // Call `done(err, accessToken, [refreshToken], [params])`, see oauth2orize.exchange.code
       return done(null, token);
@@ -162,7 +162,7 @@ server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => 
 module.exports.authorization = [
   login.ensureLoggedIn(),
   server.authorization((clientId, redirectUri, done) => {
-    db.clients.findByClientId(clientId, (error, client) => {
+    db.clients.findByYClientId(yClientId, (error, client) => {
       if (error) return done(error);
       // WARNING: For security purposes, it is highly advisable to check that
       //          redirectUri provided by the client matches one registered with
@@ -176,7 +176,7 @@ module.exports.authorization = [
     // Auto-approve
     if (client.isTrusted) return done(null, true);
 
-    db.accessTokens.findByUserIdAndClientId(user.id, client.clientId, (error, token) => {
+    db.accessTokens.findByUserIdAndClientId(user.id, client.yClientId, (error, token) => {
       // Auto-approve
       if (token) return done(null, true);
 

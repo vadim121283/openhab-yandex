@@ -1,17 +1,39 @@
 'use strict';
-const config = require('../config');
-const users = config.users;
+// Достает из mongodb сведения о user
+const User = require('../models/user');
+const mongoose = require('mongoose');
+const MongoConnect = require('./mongoconnect');
+let mongoConnect;
+
+mongoConnect = new MongoConnect();
+mongoConnect.connect(mongoose);
 
 module.exports.findById = (id, done) => {
-  for (let i = 0, len = users.length; i < len; i++) {
-    if (users[i].id === id) return done(null, users[i]);
-  }
-  return done(new Error('User Not Found'));
+
+  console.log(id);
+    User.find({ _id: id }, function (err, user) {
+        if (err) {
+            //throw err;
+            return done(new Error('User Not Found'));
+        } else {
+            console.log('User found');
+            // Мы получаем массив, поэтому вместо массива отправляем объект
+            return done(null, user[0]);
+        };
+    });
 };
 
 module.exports.findByUsername = (username, done) => {
-  for (let i = 0, len = users.length; i < len; i++) {
-    if (users[i].username === username) return done(null, users[i]);
-  }
-  return done(new Error('User Not Found'));
+
+    console.log(username);
+    Client.find({ username: username }, function (err, user) {
+        if (err) {
+            //throw err;
+            return done(new Error('User Not Found'));
+        } else {
+            console.log('User found');
+            // Мы получаем массив, поэтому вместо массива отправляем объект
+            return done(null, user[0]);
+        };
+    });
 };
