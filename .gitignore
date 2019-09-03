@@ -2,6 +2,7 @@
 node_modules/
 keys/
 test/
+develop/
 npm-debug.log
 yarn-error.log
 .env
