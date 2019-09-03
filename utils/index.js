@@ -5,7 +5,7 @@
  *
  * @param {Number} length
  * @return {String}
- * @api private
+ * @api private Hello
  */
 module.exports.getUid = function(length) {
   let uid = '';
