@@ -1,12 +1,6 @@
 'use strict';
 // Достает из mongodb сведения о клиенте
 const Client = require('../models/client');
-const mongoose = require('mongoose');
-const MongoConnect = require('./mongoconnect');
-let mongoConnect;
-
-mongoConnect = new MongoConnect();
-mongoConnect.connect(mongoose);
 
 module.exports.findById = (id, done) => {
     console.log(id);

@@ -1,14 +1,8 @@
 'use strict';
-const config = require('../config');
-var mongoose = require('mongoose');
-var Token = require('../models/token');
+// Достает из mongodb сведения о токенах
+const Token = require('../models/token');
+
 const tokens = {};
-
-mongoose.connect(getMongoUri(), function (err) {
-    if (err) throw err;
-    console.log('MongoDB Successfully connected');
-
-});
 
 const loki = require('lokijs');
 global.dbl = new loki('./loki.json', {
@@ -24,15 +18,25 @@ global.dbl = new loki('./loki.json', {
 });
 
 module.exports.find = (key, done) => {
+    console.log('token.find proc');
+    loadToken(key);
+    console.log('token.find for: ' + tokens[key]);
+    if (tokens[key]) return done(null, tokens[key]);
+    return done(new Error('Token Not Found'));
+};
+
+module.exports.findOld = (key, done) => {
+  console.log('token.find:');
   loadToken(key);
+  console.log(tokens[key]);
   if (tokens[key]) return done(null, tokens[key]);
   return done(new Error('Token Not Found'));
 };
 
-module.exports.findByUserIdAndYClientId = (userId, yClientId, done) => {
+module.exports.findByUserIdAndClientId = (userId, clientId, done) => {
   loadTokenByUserId(userId);
   for (const token in tokens) {
-    if (tokens[token].userId === userId && tokens[token].clientId === yClientId) return done(null, token);
+    if (tokens[token].userId === userId && tokens[token].clientId === clientId) return done(null, token);
   }
   return done(new Error('Token Not Found'));
 };
@@ -61,7 +65,9 @@ module.exports.save = (token, userId, clientId, done) => {
 };
 
 function loadTokenByUserId(userId, done) {
+  console.log('HERE 1: ' + userId);
   var ltoken = global.authl.findOne( {'userId': userId} );
+  console.log('HERE 2');
   if(ltoken){
     console.log('Load token by userId: User found');
     var token = ltoken.token;
@@ -69,28 +75,36 @@ function loadTokenByUserId(userId, done) {
     var clientId = ltoken.clientId;
     tokens[token] = { userId, clientId };
   }else{
-    console.log('User not found');
+    console.log('Load token by userId: User not found');
     return;
   }
 };
 
 function loadToken(token, done) {
-  var ltoken2 = global.authl.findOne( {'token': token} );
-  if(ltoken2){
-    console.log('Token found');
-    var token1 = ltoken2.token;
-    var userId = ltoken2.userId;
-    var clientId = ltoken2.clientId;
-    tokens[token1] = { userId, clientId };
-  }else{
-    console.log('Token not found');
-    return;
-  }
+    Token.find({ token: token }, function (err, token) {
+        if (err) {
+            //throw err;
+            return done(new Error('Token Not Found'));
+        } else {
+            console.log('Token found');
+            // Мы получаем массив, поэтому вместо массива отправляем объект
+            let userId = token[0].userId;
+            let clientId = token[0].clientId;
+            tokens[key] = { userId, clientId };
+        };
+    });
 };
 
-function getMongoUri() {
-    var mongoUri = 'mongodb://';
-    mongoUri += config.mongodb.hosts;
-    console.log('MongoDB mongoUri: ' + mongoUri);
-    return mongoUri + '/' + config.mongodb.db;
+function loadTokenOld(token, done) {
+    var ltoken2 = global.authl.findOne( {'token': token} );
+    if(ltoken2){
+        console.log('Token found');
+        var token1 = ltoken2.token;
+        var userId = ltoken2.userId;
+        var clientId = ltoken2.clientId;
+        tokens[token1] = { userId, clientId };
+    }else{
+        console.log('Token not found');
+        return;
+    }
 };

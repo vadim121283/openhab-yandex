@@ -11,5 +11,4 @@ module.exports = {
   clients,
   accessTokens,
   authorizationCodes,
-    mongoConnect,
 };

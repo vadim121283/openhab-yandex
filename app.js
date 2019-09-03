@@ -21,8 +21,16 @@ const credentials = {
     key: privateKey,
     cert: certificate
 };
+const mongoose = require('mongoose');
+const MongoConnect = require('./db/mongoconnect');
+let mongoConnect;
+
 // HTTPS server
 const httpsServer = https.createServer(credentials, app);
+
+// MongoDB
+mongoConnect = new MongoConnect();
+mongoConnect.connect(mongoose);
 
 // Массив устройств
 global.devices = [];

@@ -24,7 +24,7 @@ passport.use(new LocalStrategy(
   }
 ));
 
-passport.serializeUser((user, done) =>  done(null, user.id));
+passport.serializeUser((user, done) =>  done(null, user._id));
 
 passport.deserializeUser((id, done) => {
   db.users.findById(id, (error, user) => done(error, user));
@@ -46,6 +46,7 @@ function verifyClient(yClientId, clientSecret, done) {
     if (error) return done(error);
     if (!client) return done(null, false);
     if (client.clientSecret !== clientSecret) return done(null, false);
+    console.log('Client pass3: OK');
     return done(null, client);
   });
 }
@@ -78,7 +79,7 @@ passport.use(new BearerStrategy(
       } else {
         // The request came from a client only since userId is null,
         // therefore the client is passed back instead of a user.
-        db.clients.findByYClientId(token.yClientId, (error, client) => {
+        db.clients.findById(token.clientId, (error, client) => {
           if (error) return done(error);
           if (!client) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,

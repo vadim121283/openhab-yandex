@@ -6,7 +6,7 @@ const passport = require('passport');
 module.exports.info = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-    response.json({ user_id: request.user.id, name: request.user.name, scope: request.authInfo.scope });
+    response.json({ user_id: request.user._id, name: request.user.name, scope: request.authInfo.scope });
   }
 ];
 

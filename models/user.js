@@ -7,6 +7,7 @@ var UserSchema = new Schema({
     _id: ObjectId,
     username: {type: String, unique: true},     // openHAB cloud username
     password: String,                           // Password openHAB cloud user
+    name: String,                               // Name
     valid: { type: Boolean, default: true},     // Is this client is active?
     created: { type: Date, default: Date.now }  // When client was created
 });
