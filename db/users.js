@@ -3,7 +3,6 @@
 const User = require('../models/user');
 
 module.exports.findById = (id, done) => {
-
   console.log(id);
     User.findOne({ _id: id }, function (err, user) {
         if (err) {

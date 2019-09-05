@@ -3,7 +3,9 @@
 const codes = {};
 
 module.exports.find = (key, done) => {
-  if (codes[key]) return done(null, codes[key]);
+  if (codes[key]) {
+    return done(null, codes[key]);
+  }
   return done(new Error('Code Not Found'));
 };
 

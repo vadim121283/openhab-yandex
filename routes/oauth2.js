@@ -28,6 +28,7 @@ server.serializeClient((client, done) => done(null, client._id));
 server.deserializeClient((id, done) => {
   db.clients.findById(id, (error, client) => {
     if (error) return done(error);
+    console.log('deserializeClient: OK');
     return done(null, client);
   });
 });
@@ -83,16 +84,16 @@ server.grant(oauth2orize.grant.token((client, user, ares, done) => {
 server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
   db.authorizationCodes.find(code, (error, authCode) => {
     if (error) return done(error);
-    if (client._id !== authCode.clientId) return done(null, false);
+    // Тут все время не сравнивался код, пришлось делать стринг. Может еще так же не работает где-то.
+    if (client._id.toString() !== authCode.clientId.toString()) return done(null, false);
     if (redirectUri !== authCode.redirectUri) return done(null, false);
-
+    console.log('Code verify: OK');
     const token = utils.getUid(256);
     db.accessTokens.save(token, authCode.userId, authCode.clientId, (error) => {
       if (error) return done(error);
       // Add custom params, e.g. the username
       let params = { username: authCode.userName };
       // Call `done(err, accessToken, [refreshToken], [params])` to issue an access token
-      // todo Может тут затырка
         return done(null, token, null, params);
     });
   });
@@ -109,7 +110,7 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
     if (error) return done(error);
     if (!localClient) return done(null, false);
     if (localClient.clientSecret !== client.clientSecret) return done(null, false);
-    console.log('Client pass1: OK');
+    console.log('Client pass Exchange Password: OK');
     // Validate the user
     db.users.findByUsername(username, (error, user) => {
       if (error) return done(error);
@@ -137,7 +138,7 @@ server.exchange(oauth2orize.exchange.clientCredentials((client, scope, done) => 
     if (error) return done(error);
     if (!localClient) return done(null, false);
     if (localClient.clientSecret !== client.clientSecret) return done(null, false);
-    console.log('Client pass2: OK');
+    console.log('Client pass Exchange Credentials: OK');
     // Everything validated, return the token
     const token = utils.getUid(256);
     // Pass in a null for user id since there is no user with this grant type

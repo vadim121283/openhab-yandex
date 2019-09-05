@@ -2,6 +2,7 @@
 
 const passport = require('passport');
 const openhab = require('./openhab');
+const utils = require('../utils');
 
 // Информация по пользователю
 module.exports.info = [
@@ -25,8 +26,7 @@ module.exports.devices = [
     (request, response) => {
   openhab.getDevices(request.user).then((devices) => {
       var r = {
-          // todo Более красивый id запроса
-          request_id: "1",
+          request_id: utils.getUid(16),
           payload: {
               user_id: request.user._id,
               devices: []
@@ -35,7 +35,6 @@ module.exports.devices = [
       for (var i in devices) {
           r.payload.devices.push(devices[i].getInfo());
       }
-
       response.status(200);
       response.send(r);
   });
@@ -46,16 +45,20 @@ module.exports.devices = [
 module.exports.query = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-  const r = {
-    request_id: '1',
-    payload: {
-      devices: []
-    }
-  };
-  for (let i in request.body.devices) {
-    r.payload.devices.push(global.devices[request.body.devices[i].id].getInfo());
-  }
-  response.send(r);
+      openhab.getDevicesQuery(request.user, request.body.devices).then((devices) => {
+          //console.log(devices);
+          const r = {
+              request_id: utils.getUid(16),
+              payload: {
+                  devices: []
+              }
+          };
+          for (var i in devices) {
+              r.payload.devices.push(devices[i].getInfo());
+              console.log(r);
+          }
+          response.send(r);
+      });
   }
 ];
 

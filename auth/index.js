@@ -19,6 +19,7 @@ passport.use(new LocalStrategy(
       if (error) return done(error);
       if (!user) return done(null, false);
       if (user.password !== password) return done(null, false);
+      console.log('LocalStrategy: OK');
       return done(null, user);
     });
   }
@@ -46,7 +47,7 @@ function verifyClient(yClientId, clientSecret, done) {
     if (error) return done(error);
     if (!client) return done(null, false);
     if (client.clientSecret !== clientSecret) return done(null, false);
-    console.log('Client pass3: OK');
+    console.log('Client pass Basic: OK');
     return done(null, client);
   });
 }
@@ -68,12 +69,14 @@ passport.use(new BearerStrategy(
     db.accessTokens.find(accessToken, (error, token) => {
       if (error) return done(error);
       if (!token) return done(null, false);
+      console.log('BearerStrategyToken: OK');
       if (token.userId) {
         db.users.findById(token.userId, (error, user) => {
           if (error) return done(error);
           if (!user) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,
           // and this is just for illustrative purposes.
+            console.log('BearerStrategyUser: OK');
           done(null, user, { scope: '*' });
         });
       } else {
@@ -84,6 +87,7 @@ passport.use(new BearerStrategy(
           if (!client) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,
           // and this is just for illustrative purposes.
+            console.log('BearerStrategyClient: OK');
           done(null, client, { scope: '*' });
         });
       }
