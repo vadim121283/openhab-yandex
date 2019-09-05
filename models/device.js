@@ -1,67 +1,88 @@
-// Схема Устройства Yandex.
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
-var ObjectId = mongoose.SchemaTypes.ObjectId;
+// Модель Устройства Yandex не схема мангуста
 
-var DeviceSchema = new Schema({
-    _id: ObjectId,
-    name: String,                               // Random name Ru
-    room: String,                               // Room name Ru
-    type: String,   // Yandex Device Type devices.types.light
-    openhab: [
-        {
-            user: {type: ObjectId, ref: 'User'},
-            name: {type: String, ref: 'Item'},
-        }
-    ],
-    capabilities: [
-        {
-            type: 'devices.capabilities.on_off',
-            retrievable: true,
-            state: {
-                instance: 'on',
-                value: true
+class device {
+    constructor(options) {
+        this.data = {
+            id: options.id,
+            name: options.name || 'Без названия',
+            description: options.description || '',
+            room: options.room || '',
+            type: options.type || 'devices.types.light',
+            custom_data: options.custom_data,
+            capabilities: options.capabilities,
+        };
+        // global.devices.push(this);
+    }
+
+    getInfo() {
+        return this.data;
+    };
+
+
+    findDevIndex(arr, elem) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i].type === elem) {
+                return i;
             }
-        },
-        {
-            type: 'devices.capabilities.range',
-            retrievable: true,
+        }
+        return false;
+    };
 
-            parameters: {
-                instance: 'brightness',
-                unit: 'unit.percent',
-                range: {
-                    min: 0,
-                    max: 100,
-                    precision: 1
+    setState(val, type, inst) {
+        var int;
+        var topic;
+        switch (inst) {
+            case 'on':
+                try {
+                    int = val ? '1' : '0';
+                    this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.instance = inst;
+                    this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.value = val;
+                    topic = this.data.custom_data.mqtt[this.findDevIndex(this.data.custom_data.mqtt, inst)].set || false;
+                    break;
                 }
-            },
-            state: {
-                instance: 'brightness',
-                value: 10,
-            },
-        },
-        {
-            type: 'devices.capabilities.color_setting',
-            retrievable: true,
-            parameters: {
-                color_model: 'rgb',
-                temperature_k: {
-                    min: 2000,
-                    max: 8500,
-                    precision: 500,
+                catch (err) {
+                    topic = false;
+                    console.log(err);
                 }
-            },
-            state: {
-                instance: 'rgb',
-                value: 0
-            },
-        },
-    ],
-    valid: { type: Boolean, default: true},     // Is this client is active?
-    created: { type: Date, default: Date.now }  // When client was created
-});
+            case 'mute':
+                try {
+                    int = val ? '1' : '0';
+                    this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.instance = inst;
+                    this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.value = val;
+                    topic = this.data.custom_data.mqtt[this.findDevIndex(this.data.custom_data.mqtt, inst)].set || false;
+                    break;
+                }
+                catch (err) {
+                    topic = false;
+                    console.log(err);
+                }
+            default:
+                try {
+                    int = JSON.stringify(val);
+                    this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.instance = inst;
+                    this.data.capabilities[this.findDevIndex(this.data.capabilities, type)].state.value = val;
+                    topic = this.data.custom_data.mqtt[this.findDevIndex(this.data.custom_data.mqtt, inst)].set || false;
+                }
+                catch (err) {
+                    topic = false;
+                    console.log(err);
+                }
+        };
 
-DeviceSchema.index({yDeviceId: 1}, { unique: false }); // to find client by yDeviceId
+        if (topic) {
+            this.client.publish(topic, int);
+        }
+        return [
+            {
+                'state': {
+                    'instance': inst,
+                    'action_result': {
+                        'status': 'DONE'
+                    }
+                }
+            }
+        ];
+    };
+}
 
-module.exports = mongoose.model('Device', DeviceSchema);
+module.exports = device;

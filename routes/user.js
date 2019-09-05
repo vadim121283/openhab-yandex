@@ -1,6 +1,7 @@
 'use strict';
 
 const passport = require('passport');
+const openhab = require('./openhab');
 
 // Информация по пользователю
 module.exports.info = [
@@ -9,7 +10,6 @@ module.exports.info = [
     response.json({ user_id: request.user._id, name: request.user.name, scope: request.authInfo.scope });
   }
 ];
-
 
 module.exports.ping = [
   passport.authenticate('bearer', { session: true }),
@@ -22,22 +22,26 @@ module.exports.ping = [
 // Выдача массива devices
 module.exports.devices = [
   passport.authenticate('bearer', { session: true }),
-  (request, response) => {
-  var r = {
-    request_id: "1",
-    payload: {
-      user_id: "1",
-      devices: []
-    }
-  };
-  for (var i in global.devices) {
-    r.payload.devices.push(global.devices[i].getInfo());
-  }
+    (request, response) => {
+  openhab.getDevices(request.user).then((devices) => {
+      var r = {
+          // todo Более красивый id запроса
+          request_id: "1",
+          payload: {
+              user_id: request.user._id,
+              devices: []
+          }
+      };
+      for (var i in devices) {
+          r.payload.devices.push(devices[i].getInfo());
+      }
 
-  response.status(200);
-  response.send(r);
+      response.status(200);
+      response.send(r);
+  });
   }
 ];
+
 // Выдача состояния устройств
 module.exports.query = [
   passport.authenticate('bearer', { session: true }),
@@ -69,11 +73,11 @@ module.exports.action = [
     var id = request.body.payload.devices[i].id;
     try {
 
-        var capabilities = global.devices[id].setState(request.body.payload.devices[i].capabilities[0].state.value , request.body.payload.devices[i].capabilities[0].type, request.body.payload.devices[i].capabilities[0].state.instance);
+        var capabilities = global.devices2[id].setState(request.body.payload.devices[i].capabilities[0].state.value , request.body.payload.devices[i].capabilities[0].type, request.body.payload.devices[i].capabilities[0].state.instance);
 
     } catch (err) {
 
-        var capabilities = global.devices[id].setState(true , request.body.payload.devices[i].capabilities[0].type, 'mute');
+        var capabilities = global.devices2[id].setState(true , request.body.payload.devices[i].capabilities[0].type, 'mute');
     }
 
     r.payload.devices.push({ id: id, capabilities: capabilities });
@@ -85,6 +89,7 @@ module.exports.action = [
 module.exports.unlink = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
+    // todo сделать очистку токена
   response.status(200);
   }
 ];

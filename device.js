@@ -1,7 +1,7 @@
 // Для создания массива данных в формате Yandex, можно сразу ему их выдавать.
 class device {
   constructor(options) {
-    var id = global.devices.length;
+    var id = global.devices2.length;
     this.data = {
       id: String(id),
       name: options.name || 'Без названия',
@@ -13,7 +13,7 @@ class device {
       },
       capabilities: options.capabilities,
     }
-    global.devices.push(this);
+    global.devices2.push(this);
   }
   getInfo() {
     return this.data;

@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
 var ObjectId = mongoose.SchemaTypes.ObjectId;
 
 var ItemSchema = new Schema({
+    _id: ObjectId,
     user: {type: ObjectId, ref: 'User'},      // id from user
     name: String,                   // Item name
     type: String,                   // Item type (Group, Switch, Number, etc)

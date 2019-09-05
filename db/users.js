@@ -11,7 +11,6 @@ module.exports.findById = (id, done) => {
             return done(new Error('User Not Found'));
         } else {
             console.log('User found');
-            // Мы получаем массив, поэтому вместо массива отправляем объект
             return done(null, user);
         };
     });
@@ -26,7 +25,6 @@ module.exports.findByUsername = (username, done) => {
             return done(new Error('User Not Found'));
         } else {
             console.log('User found: ');
-            // Мы получаем массив, поэтому вместо массива отправляем объект
             return done(null, user);
         };
     });

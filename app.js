@@ -11,7 +11,7 @@ const passport = require('passport');
 const routes = require('./routes');
 const config = require('./config');
 const mqtt = require('mqtt');
-const device = require('./device');
+const device = require('./models/device');
 const fs = require('fs');
 const app = express();
 const https = require('https');
@@ -21,6 +21,7 @@ const credentials = {
     key: privateKey,
     cert: certificate
 };
+
 const mongoose = require('mongoose');
 const MongoConnect = require('./db/mongoconnect');
 let mongoConnect;
@@ -32,15 +33,16 @@ const httpsServer = https.createServer(credentials, app);
 mongoConnect = new MongoConnect();
 mongoConnect.connect(mongoose);
 
-// Массив устройств
-global.devices = [];
+// Массив устройств теперь в openhab
+global.devices2 = [];
 
 // Создаем класс device для всех устройств в конфиг файле
-if (config.devices) {
-    config.devices.forEach(opts => {
-        new device(opts);
-    });
-}
+// Переделано на сбор из openhab, теперь нужен авторизованный пользователь для сбора
+//if (config.devices) {
+//    config.devices.forEach(opts => {
+//        new device(opts);
+//    });
+//}
 
 // MQTT соединение
 const client = mqtt.connect(`mqtt://${config.mqtt.host}`, {
@@ -104,7 +106,7 @@ function findDevIndex(arr, elem) {
 const statPairs = [];
 
 // Загрузка массива для топиков
-global.devices.forEach(device => {
+global.devices2.forEach(device => {
     device.client = client;
     device.data.custom_data.mqtt.forEach(mqtt => {
         const statType = mqtt.type || false;
@@ -128,7 +130,7 @@ if (statPairs) {
             if (matchedDeviceId == -1) return;
 
             // Выбираем тип устройства для формирования топика или наоборот
-            const device = global.devices.find(device => device.data.id == statPairs[matchedDeviceId].deviceId);
+            const device = global.devices2.find(device => device.data.id == statPairs[matchedDeviceId].deviceId);
             var devindx;
             switch (statPairs[matchedDeviceId].topicType) {
                 case 'on':
