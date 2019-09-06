@@ -1,4 +1,4 @@
-# FORK from yandex2mqtt
+# openHAB Yandex Smart Home Connector
 Мост из Яндекс УД в openHAB на Node.js
 Пока работает после ручного заполнения базы данных, данными для авторизации. Или через скрипт test/create-users.js
 

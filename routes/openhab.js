@@ -162,7 +162,7 @@ module.exports.setDevices = async function (user, sdevices) {
                 item.capabilities[indx].state.action_result =
                     {
                         "status": "ERROR",
-                        "error_code": "INVALID_DEVICE",
+                        "error_code": "INVALID_ACTION",
                         "error_message": "Устройство не найдено"
                     };
             }
@@ -287,6 +287,7 @@ function createDevice(item, user) {
                 parameters: {
                     instance: 'brightness',
                     unit: 'unit.percent',
+                    random_access: true,
                     range: {
                         min: 0,
                         max: 100,
