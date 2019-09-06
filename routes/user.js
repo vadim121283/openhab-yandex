@@ -53,9 +53,9 @@ module.exports.query = [
                   devices: []
               }
           };
-          for (var i in devices) {
+          for (let i in devices) {
               r.payload.devices.push(devices[i].getInfo());
-              console.log(r);
+              //console.log(r);
           }
           response.send(r);
       });
@@ -66,28 +66,27 @@ module.exports.query = [
 module.exports.action = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-  var r = {
-    request_id: "1",
-    payload: {
-      devices: []
-    }
-  };
-  for (var i in request.body.payload.devices) {
-    var id = request.body.payload.devices[i].id;
-    try {
+      //console.log(JSON.stringify(request.body.payload));
+      openhab.setDevices(request.user, request.body.payload.devices).then((devices) => {
+          //console.log(devices);
+          let r = {
+              request_id: utils.getUid(16),
+              payload: {
+                  devices: []
+              }
+          };
 
-        var capabilities = global.devices2[id].setState(request.body.payload.devices[i].capabilities[0].state.value , request.body.payload.devices[i].capabilities[0].type, request.body.payload.devices[i].capabilities[0].state.instance);
+          for (let i in devices) {
+              let id = devices[i].id;
+              let capabilities = devices[i].capabilities;
 
-    } catch (err) {
-
-        var capabilities = global.devices2[id].setState(true , request.body.payload.devices[i].capabilities[0].type, 'mute');
-    }
-
-    r.payload.devices.push({ id: id, capabilities: capabilities });
-  }
-  response.send(r);
+              r.payload.devices.push({ id: id, capabilities: capabilities });
+          }
+          response.send(r);
+      });
   }
 ];
+
 // Отключение пользователя разъединение аккаунтов
 module.exports.unlink = [
   passport.authenticate('bearer', { session: true }),

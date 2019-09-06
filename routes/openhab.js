@@ -17,6 +17,8 @@ const device = require('../models/device');
 
 // Создает массив с объектами устройств для Яндекса
 // Как отрабатывать await promise
+// todo Сделать проверку на -1, если отсутствует элемент массива у которого хотим узнать индекс массив выдает -1
+
 module.exports.getDevices = async function (user) {
 
     let devices = [];
@@ -58,7 +60,131 @@ module.exports.getDevices = async function (user) {
     return devices;
 };
 
+// Для определения индекса capabilities, потом пригодится
+function findDevIndex(arr, elem) {
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i].type === elem) {
+            return i;
+        }
+    }
+    return false;
+}
+
+module.exports.setDevices = async function (user, sdevices) {
+    // Перечисляем устройства в массиве и по очереди отправляем запрос на API
+    // Обычно это один объект, но может быть несколько если команда по комнате
+    await asyncForEach(sdevices, async (item) => {
+        let url = item.custom_data.openhab.link;
+
+        // Определить что нужно сделать в капабилитис
+        // Пока делаем только on, range, color
+        // Сколько в капабилитис объектов
+        let count = item.capabilities.length; // Их несколько - цикл сбора всех
+
+        // Формирование body
+        // ON, OFF, Color - {0,100,100}, Range - 0-100
+        let data = 'OFF';
+        let indx = 0;
+
+        // Цикл капабилитис
+        if (count > 1) {
+            // Много капабилитис
+            for (var i = 0; i < item.capabilities.length; i++) {
+                // case
+                let off = false;
+                switch (item.capabilities[i].state.instance) {
+                    case 'on':
+                        // ВКЛ ВЫКЛ Если устройство выключить, то остальное и не смотрим
+                        if (item.capabilities[i].state.value === false) {
+                            data = 'OFF';
+                            off = true;
+                        }
+                        indx = i;
+                        break;
+                    case 'brightness':
+                    case 'temperature':
+                    case 'volume':
+                    case 'channel':
+                        // todo Сделать проверку на цвет, если приспускают цветную лампу
+                        if (!off) data = item.capabilities[i].state.value;
+                        indx = i;
+                        break;
+                    case 'hsv':
+                        if (!off) data = (item.capabilities[i].state.value.h + ',' + item.capabilities[i].state.value.s + ',' + item.capabilities[i].state.value.v);
+                        indx = i;
+                        break;
+                    default:
+                        // todo Все что не нашлось, отдать ошибкой.
+                        console.log('Instance not found');
+                };
+            }
+        } else if (count === -1) {
+            // Нет капабилитис, возврат с ошибкой
+            console.log('Capabilities not found');
+        } else if (count === 1) {
+            // todo Скорее всего только ВКЛ или ВЫКЛ, но надо проверить.
+            if (item.capabilities[0].state.value === false) {
+                data = 'OFF';
+            } else {
+                data = 'ON';
+            }
+            indx = 0;
+        }
+
+        //console.log('Data: ' + JSON.stringify(data));
+
+        // Отправка Json команды на openHAB
+        // Авторизация на API
+        let headers = {
+            'Authorization': 'Basic ' + base64.encode(user.username + ":" + user.password),
+            'Content-Type': 'text/plain',
+            'Accept': 'application/json'
+        };
+
+        await fetch(url, {
+            method: 'POST', // или 'PUT'
+            body: data.toString(), // data может быть типа `string` или {object}!
+            headers: headers,
+        }).then(function (res) {
+            console.log(res.status);
+            if (res.status === 200) {
+                // Успешно - сформировать объект этого устройства для отправки с DONE
+                // 200 - OK, 400 - Item command null, 404 - Item not found
+                item.capabilities[indx].state.action_result = { 'status': 'DONE' };
+            } else if (res.status === 400) {
+                item.capabilities[indx].state.action_result =
+                    {
+                        "status": "ERROR",
+                        "error_code": "INVALID_ACTION",
+                        "error_message": "Ошибка выполнения команды"
+                    };
+            } else if (res.status === 404) {
+                item.capabilities[indx].state.action_result =
+                    {
+                        "status": "ERROR",
+                        "error_code": "INVALID_DEVICE",
+                        "error_message": "Устройство не найдено"
+                    };
+            }
+            return res.json();
+        }).then(function(response) {
+               // Тела не будет
+            })
+            .catch(function(error) {
+                // Тела не будет
+            });
+        console.log(JSON.stringify(item.capabilities[indx].state.action_result));
+        // Выйти из цикла
+    });
+    // Отправляем обратно массив с результатами
+    return sdevices;
+};
+
 module.exports.getDevicesQuery = async function (user, qdevices) {
+    // Авторизация на API
+    let headers = new Headers();
+    headers.set('Authorization', 'Basic ' + base64.encode(user.username + ":" + user.password));
+
     let devices = [];
 
     let rooms = await loadRooms(user);
@@ -66,7 +192,6 @@ module.exports.getDevicesQuery = async function (user, qdevices) {
     await asyncForEach(qdevices, async (item) => {
         let url = item.custom_data.openhab.link;
         await loadDevices(user, url, rooms).then((ohdevices) => {
-            // Тут сделать перевод на яндекс устройства
             //console.log(ohdevices[0]);
 
             ohdevices.forEach(function(item, index, array) {
@@ -74,7 +199,7 @@ module.exports.getDevicesQuery = async function (user, qdevices) {
                 let opts = createDevice(item, user);
                 devices.push(new device(opts));
             });
-            console.log('Query device done: ' + devices[0].data.name);
+            console.log('Action device done: ' + devices[0].data.name);
             //global.devices2.forEach(function(item, index, array) {
             //    console.log(item.data.capabilities[0].state);
             //});
@@ -323,19 +448,3 @@ async function loadRooms(user) {
 
     return rooms;
 }
-
-function postState(userId, done) {
-    // Отправка Json
-    var url = 'https://example.com/profile';
-    var data = {username: 'example'};
-
-    fetch(url, {
-        method: 'POST', // или 'PUT'
-        body: JSON.stringify(data), // data может быть типа `string` или {object}!
-        headers:{
-            'Content-Type': 'application/json'
-        }
-    }).then(res => res.json())
-        .then(response => console.log('Успех:', JSON.stringify(response)))
-        .catch(error => console.error('Ошибка:', error));
-};
