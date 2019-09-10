@@ -92,7 +92,6 @@ module.exports.action = [
 module.exports.unlink = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-    // todo сделать очистку токена и удаление пользователя
       db.users.deleteUser(request.user.username);
       db.accessTokens.deleteToken(request.user._id);
   response.status(200);
