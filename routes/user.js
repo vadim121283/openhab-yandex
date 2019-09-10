@@ -3,6 +3,7 @@
 const passport = require('passport');
 const openhab = require('./openhab');
 const utils = require('../utils');
+const db = require('../db');
 
 // Информация по пользователю
 module.exports.info = [
@@ -91,7 +92,9 @@ module.exports.action = [
 module.exports.unlink = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-    // todo сделать очистку токена
+    // todo сделать очистку токена и удаление пользователя
+      db.users.deleteUser(request.user.username);
+      db.accessTokens.deleteToken(request.user._id);
   response.status(200);
   }
 ];

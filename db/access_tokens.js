@@ -35,9 +35,21 @@ module.exports.findByUserIdAndClientId = (userId, clientId, done) => {
             let key = token.token;
             let loadUserId = token.userId;
             let loadClientID = token.clientId;
-            console.log('LU: ' + loadUserId + ' U: ' + userId + ' LC: ' + loadClientID + ' C: ' + clientId);
+            //console.log('LU: ' + loadUserId + ' U: ' + userId + ' LC: ' + loadClientID + ' C: ' + clientId);
             if (loadUserId == userId && loadClientID == clientId) return done(null, key);
             return done(new Error('Tokens By clientId Not Found'));
+        };
+    });
+};
+
+module.exports.deleteToken = (userId) => {
+    console.log('Process delete token started...')
+    Token.deleteMany({ userId: userId }, function (err) {
+        if (err) {
+            throw err;
+        } else {
+            console.log('Token deleted: ' + userId);
+            return;
         };
     });
 };

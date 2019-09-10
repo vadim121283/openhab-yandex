@@ -8,7 +8,8 @@ var UserSchema = new Schema({
     username: {type: String, unique: true},     // openHAB cloud username
     password: String,                           // Password openHAB cloud user
     name: String,                               // Name
-    valid: { type: Boolean, default: true},     // Is this client is active?
+    ohValid: { type: Boolean, default: false},  // openHAB cloud username and pass is valid?
+    valid: { type: Boolean, default: true},     // Is this user is active?
     created: { type: Date, default: Date.now }  // When client was created
 });
 

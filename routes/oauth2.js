@@ -112,7 +112,8 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
     if (localClient.clientSecret !== client.clientSecret) return done(null, false);
     console.log('Client pass Exchange Password: OK');
     // Validate the user
-    db.users.findByUsername(username, (error, user) => {
+      console.log('Start find user 2');
+    db.users.findByUsername(username, password, (error, user) => {
       if (error) return done(error);
       if (!user) return done(null, false);
       if (password !== user.password) return done(null, false);

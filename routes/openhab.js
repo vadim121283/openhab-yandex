@@ -18,6 +18,7 @@ const device = require('../models/device');
 // Создает массив с объектами устройств для Яндекса
 // Как отрабатывать await promise
 // todo Сделать проверку на -1, если отсутствует элемент массива у которого хотим узнать индекс массив выдает -1
+// todo Сделать проверку на пароль в openHAB
 
 module.exports.getDevices = async function (user) {
 

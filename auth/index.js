@@ -15,10 +15,17 @@ const db = require('../db');
  */
 passport.use(new LocalStrategy(
   (username, password, done) => {
-    db.users.findByUsername(username, (error, user) => {
+    console.log('Local Strategy Start find user');
+    db.users.findByUsername(username, password, (error, user) => {
       if (error) return done(error);
-      if (!user) return done(null, false);
-      if (user.password !== password) return done(null, false);
+      if (!user) {
+        console.log('Local Strategy: User Not Found');
+        return done(null, false);
+      }
+      if (user.password !== password) {
+        console.log('Local Strategy: User password Not Valid');
+        return done(null, false);
+      }
       console.log('LocalStrategy: OK');
       return done(null, user);
     });
