@@ -88,9 +88,9 @@ module.exports.setDevices = async function (user, sdevices) {
         let indx = 0;
 
         // Цикл капабилитис
-        if (count > 1) {
+        if (count >= 1) {
             // Много капабилитис
-            for (var i = 0; i < item.capabilities.length; i++) {
+            for (let i = 0; i < item.capabilities.length; i++) {
                 // case
                 let off = false;
                 switch (item.capabilities[i].state.instance) {
@@ -100,16 +100,21 @@ module.exports.setDevices = async function (user, sdevices) {
                             data = 'OFF';
                             off = true;
                         }
+                        if (item.capabilities[i].state.value === true) {
+                            data = 'ON';
+                        }
                         indx = i;
                         break;
                     case 'brightness':
+                        // todo Сделать проверку на цвет, если приспускают цветную лампу
+                        if (!off) {
+                            data = item.capabilities[i].state.value;
+                        }
+                        indx = i;
+                        break;
                     case 'temperature':
                     case 'volume':
                     case 'channel':
-                        // todo Сделать проверку на цвет, если приспускают цветную лампу
-                        if (!off) data = item.capabilities[i].state.value;
-                        indx = i;
-                        break;
                     case 'hsv':
                         if (!off) data = (item.capabilities[i].state.value.h + ',' + item.capabilities[i].state.value.s + ',' + item.capabilities[i].state.value.v);
                         indx = i;
@@ -122,14 +127,6 @@ module.exports.setDevices = async function (user, sdevices) {
         } else if (count === -1) {
             // Нет капабилитис, возврат с ошибкой
             console.log('Capabilities not found');
-        } else if (count === 1) {
-            // todo Скорее всего только ВКЛ или ВЫКЛ, но надо проверить.
-            if (item.capabilities[0].state.value === false) {
-                data = 'OFF';
-            } else {
-                data = 'ON';
-            }
-            indx = 0;
         }
 
         //console.log('Data: ' + JSON.stringify(data));
@@ -235,7 +232,7 @@ function createDevice(item, user) {
         },
     };
     if (item.type === 'Light') {
-        //console.log('Light');
+        //console.log('Light CD');
         let state = false;
         if (item.state === 'ON') state = true;
         opts.type = 'devices.types.light';
@@ -250,7 +247,7 @@ function createDevice(item, user) {
         return opts;
     }
     if (item.type === 'Switch') {
-        //console.log('Switch');
+        //console.log('Switch CD');
         let state = false;
         if (item.state === 'ON') state = true;
         opts.type = 'devices.types.switch';
@@ -265,12 +262,12 @@ function createDevice(item, user) {
         return opts;
     }
     if (item.type === 'Dimmer') {
-        //console.log('Dimmer');
+        //console.log('Dimmer CD');
         let state = false;
         let dim = 0;
         if (item.state > 0) {
             state = true;
-            dim = item.state;
+            dim = parseInt(item.state);
         }
         opts.type = 'devices.types.light';
         opts.capabilities = [{
@@ -304,13 +301,13 @@ function createDevice(item, user) {
         return opts;
     }
     if (item.type === 'Color') {
-        //console.log('Color');
+        //console.log('Color CD');
         let color = item.state.split(',');
         let state = false;
         let dim = 0;
         if (color[2] > 0) {
             state = true;
-            dim = color[2];
+            dim = parseInt(color[2]);
         }
         opts.type = 'devices.types.light';
         opts.capabilities = [{
@@ -353,13 +350,14 @@ function createDevice(item, user) {
                 state: {
                     instance: 'hsv',
                     value: {
-                        h: color[0],
-                        s: color[1],
-                        v: color[2]
+                        h: parseInt(color[0]),
+                        s: parseInt(color[1]),
+                        v: parseInt(color[2])
                     }
                 },
             },
         ];
+        console.log(opts);
         return opts;
     }
 }
@@ -392,7 +390,7 @@ async function loadDevices(user, url, rooms) {
                 });
                 //console.log(item.type);
                 // Проверяю не лампа ли это?
-                if (item.tags[0] === 'Lighting') item.type = 'Light';
+                if (item.tags[0] === 'Lighting' && item.type === 'Switch') item.type = 'Light';
                 //console.log(item.type);
                 ohdevices.push(
                     {

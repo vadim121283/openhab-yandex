@@ -48,6 +48,7 @@ module.exports.query = [
   (request, response) => {
       openhab.getDevicesQuery(request.user, request.body.devices).then((devices) => {
           //console.log(devices);
+          console.log('BODY: ' + JSON.stringify(request.body));
           const r = {
               request_id: utils.getUid(16),
               payload: {
@@ -58,6 +59,7 @@ module.exports.query = [
               r.payload.devices.push(devices[i].getInfo());
               //console.log(r);
           }
+          console.log('RES: ' + JSON.stringify(r));
           response.send(r);
       });
   }
@@ -70,6 +72,7 @@ module.exports.action = [
       //console.log(JSON.stringify(request.body.payload));
       openhab.setDevices(request.user, request.body.payload.devices).then((devices) => {
           //console.log(devices);
+          //console.log('BODY: ' + JSON.stringify(request.body));
           let r = {
               request_id: utils.getUid(16),
               payload: {
@@ -83,6 +86,7 @@ module.exports.action = [
 
               r.payload.devices.push({ id: id, capabilities: capabilities });
           }
+          //console.log('RES: ' + JSON.stringify(r));
           response.send(r);
       });
   }
