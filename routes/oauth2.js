@@ -84,7 +84,6 @@ server.grant(oauth2orize.grant.token((client, user, ares, done) => {
 server.exchange(oauth2orize.exchange.code((client, code, redirectUri, done) => {
   db.authorizationCodes.find(code, (error, authCode) => {
     if (error) return done(error);
-    // Тут все время не сравнивался код, пришлось делать стринг. Может еще так же не работает где-то.
     if (client._id.toString() !== authCode.clientId.toString()) return done(null, false);
     if (redirectUri !== authCode.redirectUri) return done(null, false);
     console.log('Code verify: OK');

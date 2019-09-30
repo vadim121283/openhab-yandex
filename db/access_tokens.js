@@ -4,7 +4,6 @@ const Token = require('../models/token');
 
 module.exports.find = (key, done) => {
     // Отправляем только clientID и userID на запрос, без токена.
-
     Token.findOne({ token: key }, function (err, token) {
         if (err) {
             //throw err;

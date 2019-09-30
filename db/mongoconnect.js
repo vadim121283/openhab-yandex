@@ -3,7 +3,6 @@ const config = require('../config');
  * @param {System} system
  * @constructor
  */
-// todo Тут используется функция system Что с ней делать? Попробую без нее.
 //function MongoConnect(system) {
 //    this.system = system;
 //}

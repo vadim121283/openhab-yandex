@@ -26,14 +26,14 @@ module.exports.devices = [
   passport.authenticate('bearer', { session: true }),
     (request, response) => {
   openhab.getDevices(request.user).then((devices) => {
-      var r = {
+      let r = {
           request_id: utils.getUid(16),
           payload: {
               user_id: request.user._id,
               devices: []
           }
       };
-      for (var i in devices) {
+      for (let i in devices) {
           r.payload.devices.push(devices[i].getInfo());
       }
       response.status(200);

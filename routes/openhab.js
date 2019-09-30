@@ -16,9 +16,6 @@ const device = require('../models/device');
 // http://myopenhab.org/rest/items?tags=Lighting&recursive=false';
 
 // Создает массив с объектами устройств для Яндекса
-// Как отрабатывать await promise
-// todo Сделать проверку на -1, если отсутствует элемент массива у которого хотим узнать индекс массив выдает -1
-// todo Сделать проверку на пароль в openHAB
 
 module.exports.getDevices = async function (user) {
 
@@ -29,47 +26,25 @@ module.exports.getDevices = async function (user) {
     let rooms = await loadRooms(user);
 
     await loadDevices(user, urlLight, rooms).then((ohdevices) => {
-        // Тут сделать перевод на яндекс устройства
-        //console.log(ohdevices[0]);
-
         ohdevices.forEach(function(item, index, array) {
             // Создаем объек по шаблону Яндекс и суем в массив devices
             let opts = createDevice(item, user);
             devices.push(new device(opts));
         });
-        console.log('First device: ' + devices[0].data.name);
-        //global.devices2.forEach(function(item, index, array) {
-        //    console.log(item.data.capabilities[0].state);
-        //});
+        //console.log('First device: ' + devices[0].data.name);
     });
 
     await loadDevices(user, urlSwitch, rooms).then((ohdevices) => {
-        // Тут сделать перевод на яндекс устройства
-        //console.log(ohdevices[0]);
-
         ohdevices.forEach(function(item, index, array) {
             // Создаем объек по шаблону Яндекс и суем в массив devices
             let opts = createDevice(item, user);
             devices.push(new device(opts));
         });
-        console.log('First device: ' + devices[0].data.name);
-        //global.devices2.forEach(function(item, index, array) {
-        //    console.log(item.data.capabilities[0].state);
-        //});
+        //console.log('First device: ' + devices[0].data.name);
     });
 
     return devices;
 };
-
-// Для определения индекса capabilities, потом пригодится
-function findDevIndex(arr, elem) {
-    for (var i = 0; i < arr.length; i++) {
-        if (arr[i].type === elem) {
-            return i;
-        }
-    }
-    return false;
-}
 
 module.exports.setDevices = async function (user, sdevices) {
     // Перечисляем устройства в массиве и по очереди отправляем запрос на API
@@ -106,7 +81,6 @@ module.exports.setDevices = async function (user, sdevices) {
                         indx = i;
                         break;
                     case 'brightness':
-                        // todo Сделать проверку на цвет, если приспускают цветную лампу
                         if (!off) {
                             data = item.capabilities[i].state.value;
                         }
@@ -190,22 +164,14 @@ module.exports.getDevicesQuery = async function (user, qdevices) {
     await asyncForEach(qdevices, async (item) => {
         let url = item.custom_data.openhab.link;
         await loadDevices(user, url, rooms).then((ohdevices) => {
-            //console.log(ohdevices[0]);
-
             ohdevices.forEach(function(item, index, array) {
                 // Создаем объек по шаблону Яндекс и суем в массив devices
                 let opts = createDevice(item, user);
                 devices.push(new device(opts));
             });
             console.log('Action device done: ' + devices[0].data.name);
-            //global.devices2.forEach(function(item, index, array) {
-            //    console.log(item.data.capabilities[0].state);
-            //});
         });
     });
-
-    //qdevices.forEach(function (item, index, array) {});
-
     return devices;
 };
 
@@ -378,8 +344,6 @@ async function loadDevices(user, url, rooms) {
         .then(function(myJson) {
             //console.log(JSON.stringify(myJson));
             // Пока в загружаемых граппах оставляю только первую группу, где обычно указана комната
-            // Если один то не массив, и надо его привести к массиву, или новую тему заводить.
-
             function run(item) {
                 let roomname = item.groupNames[0];
                 let room = 'Дом';
@@ -435,10 +399,6 @@ async function loadRooms(user) {
         .then(function(myJson) {
             //console.log(JSON.stringify(myJson));
             for (let item of myJson) {
-                // { hallway: 'Коридор' }
-                //let name = item.name.toLowerCase();
-                //rooms.push({ [name]: item.label });
-                // Формат по умолчанию
                 rooms.push({ name: item.name, label: item.label });
             }
             //console.log(rooms);

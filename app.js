@@ -31,7 +31,6 @@ const httpsServer = https.createServer(credentials, app);
 mongoConnect = new MongoConnect();
 mongoConnect.connect(mongoose);
 
-// Запуск Express
 app.engine('ejs', ejs.__express);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './views'));

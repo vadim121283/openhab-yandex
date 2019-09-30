@@ -1,134 +1,94 @@
 # openHAB Yandex Smart Home Connector
 Мост из Яндекс УД в openHAB на Node.js
-Пока работает после ручного заполнения базы данных, данными для авторизации. Или через скрипт test/create-users.js
-
 Мой сайт и мои контакты там: http://knopkadom.ru
 
+Работает: Вкл, Выкл, Яркость, Цвет.
+Пока не поддерживается управление температурой и медиа техникой.
+
+Для работы навыка необходимо иметь рабочую учетную запись на https://myopenhab.org. А для этого надо иметь установленный умный дом openHAB.
+
+## Настройка openHAB:
+1. Добавить тег [ "Room" ] группам с комнатами, они автоматически добавятся в Яндекс.
+2. Добавить теги [ "Lighting" ] или [ "Switchable" ] к устройствам, которые будут управляться Яндекс.
+
+### Есть официальный опубликованный навык openHAB cloud KnopkaDom.ru
+## Подключение навыка:
+1. Открываете приложение Яндекс на смартфоне.
+2. В зависимости от системы: Android - Нажать Квадратики. iOS - Нажать Три полоски или бургер.
+3. Устройства - Умный дом - Плюсик - Добавить Устройство - openHAB cloud KnopkaDom.ru - Объединить аккаунты.
+4. Ввести пользователя и пароль от учетной записи myopenhab.org. ВНИМАНИЕ! Это не является абсолютно безопасным. Делайте это на свой страх и риск.
+5. Нажать кнопку Разрешить.
+6. Обновить список устройств.
+
 ## Установка
-###Установка еще из форка, не актуальна.
 
 Настраиваем репозиторий Node JS
-
 curl -sL https://deb.nodesource.com/setup_10.x | bash -
-
 Устанавливаем необходимые компоненты
-
 apt-get install -y nodejs git make g++ gcc build-essential
-
 Копируем файлы
-
-git clone https://github.com/munrexio/yandex2mqtt.git /mnt/data/root/yandex2mqtt
-
+git clone https://github.com/vadim121283/openhab-yandex.git /opt/openhab-yandex
 Задаём права.
-
-chown -R root:root /mnt/data/root/yandex2mqtt
-
+chown -R root:root /opt/openhab-yandex
 Заходим в директорию и запускаем установку
-
-cd /mnt/data/root/yandex2mqtt
-
+cd /opt/openhab-yandex
 npm install
 
 Запускаем мост  (Перед запуском мост нужно настроить)
-
 npm start
 
 ## Автозапуск
 
-В папке  /etc/systemd/system/ создайте файл yandex2mqtt.service и впишите в него:
+В папке  /etc/systemd/system/ создайте файл openhabyandex.service и впишите в него:
 
 [Unit]
-
 Description=yandex2mqtt
-
 After=network.target
 
-
 [Service]
-
 ExecStart=/usr/bin/npm start
-
-WorkingDirectory=/mnt/data/root/yandex2mqtt
-
+WorkingDirectory=/opt/openhab-yandex
 StandardOutput=inherit
-
 StandardError=inherit
-
 Restart=always
-
 User=root
 
-
 [Install]
-
 WantedBy=multi-user.target
-
 
 Для включения сервиса впишите в консоль:
 
-systemctl enable yandex2mqtt.service
-
+systemctl enable openhabyandex.service
 
 После этого можно управлять командами:
 
-service yandex2mqtt start
+service openhabyandex start
 
-service yandex2mqtt stop
+service openhabyandex stop
 
-service yandex2mqtt restart
-
+service openhabyandex restart
 
 ## Настройка
 
 Для работы моста необходим валидный ssl сертификат. Если нет своего домена и белого IP адреса можно воспользоваться Dynamic DNS  сервисами. (на пример noip.com). Для получения сертификата можно воспользоваться приложением certbot.
-
 Все основные настройки моста прописываются в файл config.js. Перед запуском обязательно отредактируйте настройки.
 
-
-1) MQTT: Прописываем параметры своего MQTT сервера.
-
-2) https: укажите путь к корневому SSL сертификату и файлу с ключами, порт по которому будет доступен плагин.
-
-3) clients: Укажите произвольные параметры клиента. (Будет нужно для настройки навыка в Яндексе)
-
-4) users: Укажите параметры пользователей для доступа к мосту.
-
-5) devices: Укажите необходимые девайсы и топики MQTT для управления. В конфиге уже вписанно несколько устройств для примера их конфигурации.
-
-Чуть позже добавлю шаблоны устройств.
-
-Для лучшего понимания советую посмотреть документацию от Яндекса.
-
-https://yandex.ru/dev/dialogs/alice/doc/smart-home/concepts/main-objects-docpage/
-
-https://yandex.ru/dev/dialogs/alice/doc/smart-home/concepts/on_off-docpage/
-
-## Создание навыка
+## Создание своего навыка
 
 Заходим на https://dialogs.yandex.ru/developer/skills => Создать диалог => Умный дом
 
 Название: Любое
-
 Endpoint URL: https://вашдомен/provider
-
 Ставим галку "Не показывать в каталоге"
-
 Имя разработчика: Ваше имя
-
 Нажимаем "Добавить новую" связку
-
 Название: Любое
-
-Идентификатор  и секрет : берем из конфигурации yandex2mqtt в блоке "clients".
+Идентификатор  и секрет : можно добавить в базе данных MongoDB см. модель.
 
 URL авторизации: https://вашдомен/dialog/authorize
-
 URL для получения токена: https://вашдомен/oauth/token
 
 Сохраняем связку и выбираем её в навыке. Выбираем иконку, пишем описание, нажимаем "Сохранить".
-
 Дальше жмём "На модерацию" и сразу "Опубликовать". Готово.
-
 Навык появится в приложении Яндекс в разделе "Устройства" => умный дом.
-
 Свяжите аккаунты и обновите список устройств. После этого устройства будут доступны для управления через Алису.
