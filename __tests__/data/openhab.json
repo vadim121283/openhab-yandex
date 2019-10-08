@@ -1,0 +1,278 @@
+{
+  "items": [
+    {"Lighting": [
+      {
+        "link": "http://localhost:3000/rest/items/KidsRoomLight_Power1",
+        "state": "OFF",
+        "stateDescription": {
+          "pattern": "%s ",
+          "readOnly": false,
+          "options": []
+        },
+        "editable": false,
+        "type": "Switch",
+        "name": "KidsRoomLight_Power1",
+        "label": "Детская свет",
+        "category": "light",
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "KidsRoom",
+          "gLight"
+        ]
+      },
+      {
+        "link": "http://localhost:3000/rest/items/MagicHome2_ch1",
+        "state": "50",
+        "editable": false,
+        "type": "Dimmer",
+        "name": "MagicHome2_ch1",
+        "label": "Настольная лампа",
+        "category": "light",
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Bedroom",
+          "gLight"
+        ]
+      },
+      {
+        "link": "http://localhost:3000/rest/items/MagicHome3_Color",
+        "state": "20,100,100",
+        "editable": false,
+        "type": "Color",
+        "name": "MagicHome3_Color",
+        "label": "Подсветка стола",
+        "category": "color",
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Bedroom",
+          "gLight"
+        ]
+      },
+      {
+        "link": "http://localhost:3000/rest/items/KitchenLight_Power1",
+        "state": "ON",
+        "stateDescription": {
+          "pattern": "%s ",
+          "readOnly": false,
+          "options": []
+        },
+        "editable": false,
+        "type": "Switch",
+        "name": "KitchenLight_Power1",
+        "label": "Кухня свет",
+        "category": "light",
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Kitchen",
+          "gLight"
+        ]
+      },
+      {
+        "link": "http://localhost:3000/rest/items/BedroomLight_Power2",
+        "state": "OFF",
+        "stateDescription": {
+          "pattern": "%s",
+          "readOnly": false,
+          "options": []
+        },
+        "editable": false,
+        "type": "Switch",
+        "name": "BedroomLight_Power2",
+        "label": "Спальня Шар",
+        "category": "light",
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Bedroom",
+          "gLight"
+        ]
+      }
+    ]},
+    {"Switchable": [
+      {
+        "link": "http://localhost:3000/rest/items/SmartSocket1",
+        "state": "ON",
+        "stateDescription": {
+          "pattern": "%s",
+          "readOnly": false,
+          "options": []
+        },
+        "editable": false,
+        "type": "Switch",
+        "name": "SmartSocket1",
+        "label": "Умная розетка",
+        "category": "poweroutlet_eu",
+        "tags": [
+          "Switchable"
+        ],
+        "groupNames": [
+          "Home",
+          "gOutlet"
+        ]
+      }
+    ]},
+    {"KidsRoomLight_Power1": {
+      "link": "http://localhost:3000/rest/items/KidsRoomLight_Power1",
+      "state": "OFF",
+      "stateDescription": {
+        "pattern": "%s ",
+        "readOnly": false,
+        "options": []
+      },
+      "editable": false,
+      "type": "Switch",
+      "name": "KidsRoomLight_Power1",
+      "label": "Детская свет",
+      "category": "light",
+      "tags": [
+        "Lighting"
+      ],
+      "groupNames": [
+        "KidsRoom",
+        "gLight"
+      ]
+    }},
+    {"MagicHome2_ch1": {
+      "link": "http://localhost:3000/rest/items/MagicHome2_ch1",
+      "state": "50",
+      "editable": false,
+      "type": "Dimmer",
+      "name": "MagicHome2_ch1",
+      "label": "Настольная лампа",
+      "category": "light",
+      "tags": [
+        "Lighting"
+      ],
+      "groupNames": [
+        "Bedroom",
+        "gLight"
+      ]
+    }},
+    {"MagicHome3_Color": {
+      "link": "http://localhost:3000/rest/items/MagicHome3_Color",
+      "state": "20,100,100",
+      "editable": false,
+      "type": "Color",
+      "name": "MagicHome3_Color",
+      "label": "Подсветка стола",
+      "category": "color",
+      "tags": [
+        "Lighting"
+      ],
+      "groupNames": [
+        "Bedroom",
+        "gLight"
+      ]
+    }},
+    {"KitchenLight_Power1": {
+      "link": "http://localhost:3000/rest/items/KitchenLight_Power1",
+      "state": "ON",
+      "stateDescription": {
+        "pattern": "%s ",
+        "readOnly": false,
+        "options": []
+      },
+      "editable": false,
+      "type": "Switch",
+      "name": "KitchenLight_Power1",
+      "label": "Кухня свет",
+      "category": "light",
+      "tags": [
+        "Lighting"
+      ],
+      "groupNames": [
+        "Kitchen",
+        "gLight"
+      ]
+    }},
+    {"BedroomLight_Power2": {
+      "link": "http://localhost:3000/rest/items/BedroomLight_Power2",
+      "state": "OFF",
+      "stateDescription": {
+        "pattern": "%s",
+        "readOnly": false,
+        "options": []
+      },
+      "editable": false,
+      "type": "Switch",
+      "name": "BedroomLight_Power2",
+      "label": "Спальня Шар",
+      "category": "light",
+      "tags": [
+        "Lighting"
+      ],
+      "groupNames": [
+        "Bedroom",
+        "gLight"
+      ]
+    }},
+    {"SmartSocket1": {
+      "link": "http://localhost:3000/rest/items/SmartSocket1",
+      "state": "ON",
+      "stateDescription": {
+        "pattern": "%s",
+        "readOnly": false,
+        "options": []
+      },
+      "editable": false,
+      "type": "Switch",
+      "name": "SmartSocket1",
+      "label": "Умная розетка",
+      "category": "poweroutlet_eu",
+      "tags": [
+        "Switchable"
+      ],
+      "groupNames": [
+        "Home",
+        "gOutlet"
+      ]
+    }}
+  ],
+  "uuid": [
+    {"uuid": "sample uuid"}
+  ],
+  "Room": [
+  {
+    "editable": false,
+    "label": "Кухня"
+  },
+  {
+    "editable": false,
+    "label": "Детская"
+  },
+  {
+    "editable": false,
+    "label": "Спальня"
+  }
+],
+  "it": [
+    {
+      "link": "http://localhost:3000/rest/items/KidsRoomLight_Power1",
+      "state": "OFF",
+      "stateDescription": {
+        "pattern": "%s ",
+        "readOnly": false,
+        "options": []
+      },
+      "editable": false,
+      "type": "Switch",
+      "name": "KidsRoomLight_Power1",
+      "label": "Детская свет",
+      "category": "light",
+      "tags": "Lighting",
+      "groupNames": [
+        "KidsRoom",
+        "gLight"
+      ]
+    }
+  ]
+}

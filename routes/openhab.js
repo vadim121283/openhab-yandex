@@ -118,7 +118,7 @@ module.exports.setDevices = async function (user, sdevices) {
             body: data.toString(), // data может быть типа `string` или {object}!
             headers: headers,
         }).then(function (res) {
-            console.log(res.status);
+            //console.log(res.status);
             if (res.status === 200) {
                 // Успешно - сформировать объект этого устройства для отправки с DONE
                 // 200 - OK, 400 - Item command null, 404 - Item not found
@@ -145,7 +145,7 @@ module.exports.setDevices = async function (user, sdevices) {
             .catch(function(error) {
                 // Тела не будет
             });
-        console.log(JSON.stringify(item.capabilities[indx].state.action_result));
+        //console.log(JSON.stringify(item.capabilities[indx].state.action_result));
         // Выйти из цикла
     });
     // Отправляем обратно массив с результатами
@@ -165,11 +165,16 @@ module.exports.getDevicesQuery = async function (user, qdevices) {
         let url = item.custom_data.openhab.link;
         await loadDevices(user, url, rooms).then((ohdevices) => {
             ohdevices.forEach(function(item, index, array) {
+                // В openHABian 1.5 API при запросе одного устройства выдает вопросы
+                // вместо русского имени в label. Проверка на вопросы и возврат имени.
+                if (item.label.includes('?')) {
+                    item.label = qdevices[index].name;
+                }
                 // Создаем объек по шаблону Яндекс и суем в массив devices
                 let opts = createDevice(item, user);
                 devices.push(new device(opts));
             });
-            console.log('Action device done: ' + devices[0].data.name);
+            console.log('Query device done: ' + devices[0].data.name);
         });
     });
     return devices;
@@ -323,7 +328,7 @@ function createDevice(item, user) {
                 },
             },
         ];
-        console.log(opts);
+        //console.log(opts);
         return opts;
     }
 }
@@ -345,10 +350,12 @@ async function loadDevices(user, url, rooms) {
             //console.log(JSON.stringify(myJson));
             // Пока в загружаемых граппах оставляю только первую группу, где обычно указана комната
             function run(item) {
-                let roomname = item.groupNames[0];
+                //console.log(JSON.stringify(item));
+                //console.log(item.groupNames);
+                let roomName = item.groupNames[0];
                 let room = 'Дом';
                 rooms.forEach(function(item2, index, array) {
-                    if (item2.name === roomname) {
+                    if (item2.name === roomName) {
                         room = item2.label;
                     }
                 });
@@ -369,21 +376,22 @@ async function loadDevices(user, url, rooms) {
                     });
             }
 
-            if (myJson[0]) {
+            if (Array.isArray(myJson)) {
                 for (let item of myJson) {
                     run(item);
                 }
             } else {
                 run(myJson);
             }
-            console.log('Devices: ' + ohdevices.length);
+
+            //console.log('Devices: ' + ohdevices.length);
         });
     return ohdevices;
 };
 
 async function loadRooms(user) {
     // Rooms
-    let urlRoom = config.openhab.host + '/rest/items?tags=Room&recursive=false&fields=name%2C%20label';
+    let urlRoom = config.openhab.host + '/rest/items?tags=Room&recursive=false&fields=name%2Clabel';
 
     // Авторизация на API
     let headers = new Headers();
@@ -404,7 +412,7 @@ async function loadRooms(user) {
             //console.log(rooms);
             return rooms;
         });
-    console.log('Rooms: ' + rooms.length);
+    //console.log('Rooms: ' + rooms.length);
 
     return rooms;
 }

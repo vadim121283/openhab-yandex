@@ -1,0 +1,4 @@
+{
+  "/rest/*": "/$1",
+  "/rest\\?tags=:tags": "/it/:tags"
+}
