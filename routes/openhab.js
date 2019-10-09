@@ -29,7 +29,7 @@ module.exports.getDevices = async function (user) {
         ohdevices.forEach(function(item, index, array) {
             // Создаем объек по шаблону Яндекс и суем в массив devices
             let opts = createDevice(item, user);
-            devices.push(new device(opts));
+            if (opts) devices.push(new device(opts));
         });
         //console.log('First device: ' + devices[0].data.name);
     });
@@ -38,7 +38,7 @@ module.exports.getDevices = async function (user) {
         ohdevices.forEach(function(item, index, array) {
             // Создаем объек по шаблону Яндекс и суем в массив devices
             let opts = createDevice(item, user);
-            devices.push(new device(opts));
+            if (opts) devices.push(new device(opts));
         });
         //console.log('First device: ' + devices[0].data.name);
     });
@@ -187,6 +187,7 @@ async function asyncForEach(array, callback) {
 }
 
 function createDevice(item, user) {
+    //console.log(JSON.stringify(item));
     let opts = {
         id: user._id + '-' + item.name,
         name: item.label,

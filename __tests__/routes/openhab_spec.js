@@ -2,18 +2,23 @@ const assert = require("assert");
 const openhab = require("../../routes/openhab");
 const config = require('../../config');
 
-const host15 = 'http://192.168.30.102:8080';
+//const host15 = 'http://192.168.30.102:8080';
+const host15 = 'https://myopenhab.org';
 const host14 = 'http://192.168.30.5:8080';
 const user = {
     _id: "fakeId123",
+    username: "DIS63@yandex.ru",
+    password: "AndrewD@"
+};
+/*const user = {
+    _id: "fakeId123",
     username: "test@gmail.com",
     password: "1234"
-};
+};*/
 /*beforeEach(async function() {
     await db.clear();
     await db.save([tobi, loki, jane]);
 });*/
-
 
 describe('openHABian API test', function() {
     let expectedObj = {
