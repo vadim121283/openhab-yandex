@@ -1,7 +1,30 @@
 {
   "env": {
-    "node": true,
-    "browser": true
+    "commonjs": true,
+    "es6": true,
+    "jest": true,
+    "node": true
   },
-  "extends": "airbnb-base"
+  "extends": "airbnb-base",
+  "rules": {
+    "consistent-return": "off",
+    "eqeqeq": "off",
+    "func-names": "off",
+    "global-require": "off",
+    "guard-for-in": "warn",
+    "max-len": ["warn", {"code": 100}],
+    "new-cap": "off",
+    "no-await-in-loop": "off",
+    "no-console": "off",
+    "no-mixed-operators": "off",
+    "no-param-reassign": "off",
+    "no-plusplus": "off",
+    "no-shadow": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-vars": "warn",
+    "no-use-before-define": "off",
+    "no-restricted-syntax": "warn",
+    "radix": "off",
+    "space-before-function-paren": "off"
+  }
 }
