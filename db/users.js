@@ -1,65 +1,59 @@
-'use strict';
 // Достает из mongodb сведения о user
 const Headers = require('fetch-headers');
 const fetch = require('node-fetch');
 const User = require('../models/user');
 const config = require('../config');
-let base64 = require('base-64');
-let mongoose = require('mongoose');
+const base64 = require('base-64');
+const mongoose = require('mongoose');
 
 module.exports.findById = (id, done) => {
   console.log(id);
-  User.findOne({ _id: id }, function(err, user) {
+  User.findOne({ _id: id }, (err, user) => {
     if (err) {
-      //throw err;
+      // throw err;
       return done(new Error('User Not Found'));
-    } else {
-      console.log('User found');
-      return done(null, user);
     }
+    console.log('User found');
+    return done(null, user);
   });
 };
 
 module.exports.findByUsername = (username, password, done) => {
   console.log(username);
-  User.findOne({ username: username }, async function(err, user) {
+  User.findOne({ username }, async (err, user) => {
     if (err) {
       throw err;
+    } else if (user) {
+      console.log('User found db.users');
+      // Есть в базе, просто отдадим
+      return done(null, user);
     } else {
+      const user = await saveUser(username, password);
       if (user) {
-        console.log('User found db.users');
-        // Есть в базе, просто отдадим
+        console.log('User Found FBU');
         return done(null, user);
-      } else {
-        let user = await saveUser(username, password);
-        if (user) {
-          console.log('User Found FBU');
-          return done(null, user);
-        } else {
-          return done(console.log('User Not Found FBU'));
-        }
       }
+      return done(console.log('User Not Found FBU'));
     }
   });
 };
 
-module.exports.deleteUser = username => {
+module.exports.deleteUser = (username) => {
   console.log('Process delete user started...');
-  User.deleteOne({ username: username }, function(err) {
+  User.deleteOne({ username }, (err) => {
     if (err) {
       throw err;
     } else {
-      console.log('User deleted: ' + username);
-      return;
+      console.log(`User deleted: ${username}`);
     }
   });
 };
 
 async function saveUser(username, password) {
   // Проверим что он входит в openHAB и создадим в базе
-  let ohValid = await checkOpenHabPassword(username, password);
+  const ohValid = await checkOpenHabPassword(username, password);
 
-  let user = await User.findOne({ username: username });
+  const user = await User.findOne({ username });
 
   if (user) {
     if (ohValid) {
@@ -75,56 +69,53 @@ async function saveUser(username, password) {
         user.ohValid = false;
       }
     }
-    await user.save(function(err) {
+    await user.save((err) => {
       if (err) throw err;
-
-      console.log(loadUser.username);
+      // console.log(loadUser.username);
       console.log('User pass updated');
     });
     return user;
-  } else {
-    // Пользователя нет
-    if (ohValid) {
-      // Пользователя нет, создадим нового пользователя, ohValid - норм.
-      console.log('User not Found. Create new...');
-
-      let newUser = new User({
-        _id: new mongoose.Types.ObjectId(),
-        username: username,
-        password: password,
-        name: username,
-        ohValid: true
-      });
-      await newUser.save(function(err) {
-        if (err) throw err;
-
-        console.log('User saved');
-      });
-      return newUser;
-    } else {
-      return new Error('User - Not, OH - Not');
-    }
   }
+  // Пользователя нет
+  if (ohValid) {
+    // Пользователя нет, создадим нового пользователя, ohValid - норм.
+    console.log('User not Found. Create new...');
+
+    const newUser = new User({
+      _id: new mongoose.Types.ObjectId(),
+      username,
+      password,
+      name: username,
+      ohValid: true,
+    });
+    await newUser.save((err) => {
+      if (err) throw err;
+
+      console.log('User saved');
+    });
+    return newUser;
+  }
+  return new Error('User - Not, OH - Not');
 }
 
 async function checkOpenHabPassword(username, password) {
   // Проверка пользователя и пароль openHAB
   // Авторизация на API
-  let headers = new Headers();
+  const headers = new Headers();
   headers.set(
     'Authorization',
-    'Basic ' + base64.encode(username + ':' + password)
+    `Basic ${base64.encode(`${username}:${password}`)}`,
   );
 
-  let url = config.openhab.host + '/rest/uuid';
+  const url = `${config.openhab.host}/rest/uuid`;
 
   let ohValid = false;
 
   await fetch(url, {
     method: 'GET',
-    headers: headers
+    headers,
   })
-    .then(function(res) {
+    .then((res) => {
       if (res.status === 200) {
         // Успешно
         // 200 - OK, 401 - Unauthorized
@@ -137,10 +128,10 @@ async function checkOpenHabPassword(username, password) {
       }
       return res.json();
     })
-    .then(function(response) {
+    .then((response) => {
       // Тело содержжит UUID
     })
-    .catch(function(error) {
+    .catch((error) => {
       // Тела не будет
     });
   return ohValid;

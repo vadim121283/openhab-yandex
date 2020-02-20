@@ -1,5 +1,3 @@
-'use strict';
-
 // Что пишет сервер на своих страницах браузера
 const passport = require('passport');
 const login = require('connect-ensure-login');
@@ -11,7 +9,7 @@ module.exports.loginForm = (request, response) => response.render('login');
 
 module.exports.login = passport.authenticate('local', {
   successReturnToOrRedirect: '/',
-  failureRedirect: '/login'
+  failureRedirect: '/login',
 });
 
 module.exports.logout = (request, response) => {
@@ -21,5 +19,5 @@ module.exports.logout = (request, response) => {
 
 module.exports.account = [
   login.ensureLoggedIn(),
-  (request, response) => response.render('account', { user: request.user })
+  (request, response) => response.render('account', { user: request.user }),
 ];

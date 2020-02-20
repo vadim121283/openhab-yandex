@@ -1,6 +1,4 @@
 /* Для создания и выдачи токенов */
-'use strict';
-
 const oauth2orize = require('@poziworld/oauth2orize');
 const passport = require('passport');
 const login = require('connect-ensure-login');
@@ -52,10 +50,10 @@ server.grant(
   oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
     const code = utils.getUid(16);
     console.log(
-      'Авторизация клиента и сохранение в памяти client_id: ' +
-        client._id +
-        ' user_id: ' +
-        user._id
+      `Авторизация клиента и сохранение в памяти client_id: ${
+        client._id
+      } user_id: ${
+        user._id}`,
     );
     db.authorizationCodes.save(
       code,
@@ -64,13 +62,13 @@ server.grant(
       redirectUri,
       user._id,
       user.username,
-      error => {
+      (error) => {
         if (error) return done(error);
         console.log('Авторизация 1 Успешно');
         return done(null, code);
-      }
+      },
     );
-  })
+  }),
 );
 
 // Grant implicit authorization. The callback takes the `client` requesting
@@ -84,16 +82,16 @@ server.grant(
   oauth2orize.grant.token((client, user, ares, done) => {
     const token = utils.getUid(256);
     console.log(
-      'Авторизация пользователя и сохранение токена client_id: ' +
-        client._id +
-        ' user_id: ' +
-        user._id
+      `Авторизация пользователя и сохранение токена client_id: ${
+        client._id
+      } user_id: ${
+        user._id}`,
     );
-    db.accessTokens.save(token, user._id, client._id, error => {
+    db.accessTokens.save(token, user._id, client._id, (error) => {
       if (error) return done(error);
       return done(null, token);
     });
-  })
+  }),
 );
 
 // Exchange authorization codes for access tokens. The callback accepts the
@@ -107,20 +105,21 @@ server.exchange(
   oauth2orize.exchange.code((client, code, redirectUri, done) => {
     db.authorizationCodes.find(code, (error, authCode) => {
       if (error) return done(error);
-      if (client._id.toString() !== authCode.clientId.toString())
+      if (client._id.toString() !== authCode.clientId.toString()) {
         return done(null, false);
+      }
       if (redirectUri !== authCode.redirectUri) return done(null, false);
       console.log('Code verify: OK');
       const token = utils.getUid(256);
-      db.accessTokens.save(token, authCode.userId, authCode.clientId, error => {
+      db.accessTokens.save(token, authCode.userId, authCode.clientId, (error) => {
         if (error) return done(error);
         // Add custom params, e.g. the username
-        let params = { username: authCode.userName };
+        const params = { username: authCode.userName };
         // Call `done(err, accessToken, [refreshToken], [params])` to issue an access token
         return done(null, token, null, params);
       });
     });
-  })
+  }),
 );
 
 // Exchange user id and password for access tokens. The callback accepts the
@@ -134,8 +133,9 @@ server.exchange(
     db.clients.findByYClientId(client.yClientId, (error, localClient) => {
       if (error) return done(error);
       if (!localClient) return done(null, false);
-      if (localClient.clientSecret !== client.clientSecret)
+      if (localClient.clientSecret !== client.clientSecret) {
         return done(null, false);
+      }
       console.log('Client pass Exchange Password: OK');
       // Validate the user
       console.log('Start find user 2');
@@ -145,14 +145,14 @@ server.exchange(
         if (password !== user.password) return done(null, false);
         // Everything validated, return the token
         const token = utils.getUid(256);
-        db.accessTokens.save(token, user._id, client._id, error => {
+        db.accessTokens.save(token, user._id, client._id, (error) => {
           if (error) return done(error);
           // Call `done(err, accessToken, [refreshToken], [params])`, see oauth2orize.exchange.code
           return done(null, token);
         });
       });
     });
-  })
+  }),
 );
 
 // Exchange the client id and password/secret for an access token. The callback accepts the
@@ -166,19 +166,20 @@ server.exchange(
     db.clients.findByYClientId(client.yClientId, (error, localClient) => {
       if (error) return done(error);
       if (!localClient) return done(null, false);
-      if (localClient.clientSecret !== client.clientSecret)
+      if (localClient.clientSecret !== client.clientSecret) {
         return done(null, false);
+      }
       console.log('Client pass Exchange Credentials: OK');
       // Everything validated, return the token
       const token = utils.getUid(256);
       // Pass in a null for user id since there is no user with this grant type
-      db.accessTokens.save(token, null, client._id, error => {
+      db.accessTokens.save(token, null, client._id, (error) => {
         if (error) return done(error);
         // Call `done(err, accessToken, [refreshToken], [params])`, see oauth2orize.exchange.code
         return done(null, token);
       });
     });
-  })
+  }),
 );
 
 // User authorization endpoint.
@@ -227,17 +228,17 @@ module.exports.authorization = [
 
           // Otherwise ask user
           return done(null, false);
-        }
+        },
       );
-    }
+    },
   ),
   (request, response) => {
     response.render('dialog', {
       transactionId: request.oauth2.transactionID,
       user: request.user,
-      client: request.oauth2.client
+      client: request.oauth2.client,
     });
-  }
+  },
 ];
 
 // User decision endpoint.
@@ -258,8 +259,8 @@ module.exports.decision = [login.ensureLoggedIn(), server.decision()];
 
 module.exports.token = [
   passport.authenticate(['basic', 'oauth2-client-password'], {
-    session: false
+    session: false,
   }),
   server.token(),
-  server.errorHandler()
+  server.errorHandler(),
 ];

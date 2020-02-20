@@ -1,5 +1,3 @@
-'use strict';
-
 const site = require('./site');
 const oauth2 = require('./oauth2');
 const openhab = require('./openhab');
@@ -11,5 +9,5 @@ module.exports = {
   oauth2,
   openhab,
   user,
-  client
+  client,
 };

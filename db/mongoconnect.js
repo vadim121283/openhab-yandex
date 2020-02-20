@@ -1,17 +1,18 @@
 const config = require('../config');
+
 /**
  * @param {System} system
  * @constructor
  */
-//function MongoConnect(system) {
+// function MongoConnect(system) {
 //    this.system = system;
-//}
+// }
 
 function MongoConnect() {}
 
 /**
- * Takes the mongoose object and tries to connect it with the configured database of the system object provided to the
- * constructor of this object.
+ * Takes the mongoose object and tries to connect it with the configured database of the system
+ * object provided to the constructor of this object.
  *
  * The optional callback parameter can be used to pass a callback to the mongoose.connect function.
  *
@@ -22,17 +23,15 @@ MongoConnect.prototype.connect = function(mongoose, callback) {
   if (typeof callback !== 'function') {
     callback = this.defaultCallback;
   }
-  console.log(
-    'Trying to connect to mongodb at: ' + this.getMongoHostAndDatabase()
-  );
+  console.log(`Trying to connect to mongodb at: ${this.getMongoHostAndDatabase()}`);
   mongoose.connect(
     this.getMongoUri(),
     {
       useNewUrlParser: true,
       useCreateIndex: true,
-      useFindAndModify: false
+      useFindAndModify: false,
     },
-    callback
+    callback,
   );
 };
 
@@ -44,7 +43,7 @@ MongoConnect.prototype.connect = function(mongoose, callback) {
  */
 MongoConnect.prototype.defaultCallback = function(error) {
   if (error) {
-    console.log('Error while connecting to mongodb: ' + error);
+    console.log(`Error while connecting to mongodb: ${error}`);
     console.log('Stopping openHAB-cloud due to error with mongodb');
   }
 
@@ -66,7 +65,7 @@ MongoConnect.prototype.getMongoUri = function() {
 
   mongoUri += config.mongodb.hosts;
 
-  return mongoUri + '/' + config.mongodb.db;
+  return `${mongoUri}/${config.mongodb.db}`;
 };
 
 /**
@@ -80,7 +79,7 @@ MongoConnect.prototype.getMongoHostAndDatabase = function() {
 
   mongoUri += config.mongodb.hosts;
 
-  return mongoUri + '/' + config.mongodb.db;
+  return `${mongoUri}/${config.mongodb.db}`;
 };
 
 module.exports = MongoConnect;
