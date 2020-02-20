@@ -9,7 +9,11 @@ const db = require('../db');
 module.exports.info = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-    response.json({ user_id: request.user._id, name: request.user.name, scope: request.authInfo.scope });
+    response.json({
+      user_id: request.user._id,
+      name: request.user.name,
+      scope: request.authInfo.scope
+    });
   }
 ];
 
@@ -24,21 +28,21 @@ module.exports.ping = [
 // Выдача массива devices
 module.exports.devices = [
   passport.authenticate('bearer', { session: true }),
-    (request, response) => {
-  openhab.getDevices(request.user).then((devices) => {
+  (request, response) => {
+    openhab.getDevices(request.user).then(devices => {
       let r = {
-          request_id: utils.getUid(16),
-          payload: {
-              user_id: request.user._id,
-              devices: []
-          }
+        request_id: utils.getUid(16),
+        payload: {
+          user_id: request.user._id,
+          devices: []
+        }
       };
       for (let i in devices) {
-          r.payload.devices.push(devices[i].getInfo());
+        r.payload.devices.push(devices[i].getInfo());
       }
       response.status(200);
       response.send(r);
-  });
+    });
   }
 ];
 
@@ -46,21 +50,23 @@ module.exports.devices = [
 module.exports.query = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-      openhab.getDevicesQuery(request.user, request.body.devices).then((devices) => {
-          //console.log(devices);
-          console.log('BODY: ' + JSON.stringify(request.body));
-          const r = {
-              request_id: utils.getUid(16),
-              payload: {
-                  devices: []
-              }
-          };
-          for (let i in devices) {
-              r.payload.devices.push(devices[i].getInfo());
-              //console.log(r);
+    openhab
+      .getDevicesQuery(request.user, request.body.devices)
+      .then(devices => {
+        //console.log(devices);
+        console.log('BODY: ' + JSON.stringify(request.body));
+        const r = {
+          request_id: utils.getUid(16),
+          payload: {
+            devices: []
           }
-          console.log('RES: ' + JSON.stringify(r));
-          response.send(r);
+        };
+        for (let i in devices) {
+          r.payload.devices.push(devices[i].getInfo());
+          //console.log(r);
+        }
+        console.log('RES: ' + JSON.stringify(r));
+        response.send(r);
       });
   }
 ];
@@ -69,25 +75,27 @@ module.exports.query = [
 module.exports.action = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-      //console.log(JSON.stringify(request.body.payload));
-      openhab.setDevices(request.user, request.body.payload.devices).then((devices) => {
-          //console.log(devices);
-          //console.log('BODY: ' + JSON.stringify(request.body));
-          let r = {
-              request_id: utils.getUid(16),
-              payload: {
-                  devices: []
-              }
-          };
-
-          for (let i in devices) {
-              let id = devices[i].id;
-              let capabilities = devices[i].capabilities;
-
-              r.payload.devices.push({ id: id, capabilities: capabilities });
+    //console.log(JSON.stringify(request.body.payload));
+    openhab
+      .setDevices(request.user, request.body.payload.devices)
+      .then(devices => {
+        //console.log(devices);
+        //console.log('BODY: ' + JSON.stringify(request.body));
+        let r = {
+          request_id: utils.getUid(16),
+          payload: {
+            devices: []
           }
-          //console.log('RES: ' + JSON.stringify(r));
-          response.send(r);
+        };
+
+        for (let i in devices) {
+          let id = devices[i].id;
+          let capabilities = devices[i].capabilities;
+
+          r.payload.devices.push({ id: id, capabilities: capabilities });
+        }
+        //console.log('RES: ' + JSON.stringify(r));
+        response.send(r);
       });
   }
 ];
@@ -96,8 +104,8 @@ module.exports.action = [
 module.exports.unlink = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-      db.users.deleteUser(request.user.username);
-      db.accessTokens.deleteToken(request.user._id);
-  response.status(200);
+    db.users.deleteUser(request.user.username);
+    db.accessTokens.deleteToken(request.user._id);
+    response.status(200);
   }
 ];

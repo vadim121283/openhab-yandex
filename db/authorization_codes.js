@@ -9,7 +9,15 @@ module.exports.find = (key, done) => {
   return done(new Error('Code Not Found'));
 };
 
-module.exports.save = (code, clientId, yClientId, redirectUri, userId, userName, done) => {
+module.exports.save = (
+  code,
+  clientId,
+  yClientId,
+  redirectUri,
+  userId,
+  userName,
+  done
+) => {
   codes[code] = { clientId, yClientId, redirectUri, userId, userName };
   done();
 };

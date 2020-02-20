@@ -18,15 +18,22 @@ function MongoConnect() {}
  * @param mongoose
  * @param callback
  */
-MongoConnect.prototype.connect = function (mongoose, callback) {
-    if (typeof callback !== 'function') {
-        callback = this.defaultCallback;
-    }
-    console.log('Trying to connect to mongodb at: ' + this.getMongoHostAndDatabase());
-    mongoose.connect(this.getMongoUri(), {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useFindAndModify: false }, callback);
+MongoConnect.prototype.connect = function(mongoose, callback) {
+  if (typeof callback !== 'function') {
+    callback = this.defaultCallback;
+  }
+  console.log(
+    'Trying to connect to mongodb at: ' + this.getMongoHostAndDatabase()
+  );
+  mongoose.connect(
+    this.getMongoUri(),
+    {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    },
+    callback
+  );
 };
 
 /**
@@ -35,13 +42,13 @@ MongoConnect.prototype.connect = function (mongoose, callback) {
  * @param error
  * @private
  */
-MongoConnect.prototype.defaultCallback = function (error) {
-    if (error) {
-        console.log('Error while connecting to mongodb: ' + error);
-        console.log('Stopping openHAB-cloud due to error with mongodb');
-    }
+MongoConnect.prototype.defaultCallback = function(error) {
+  if (error) {
+    console.log('Error while connecting to mongodb: ' + error);
+    console.log('Stopping openHAB-cloud due to error with mongodb');
+  }
 
-    console.log('Successfully connected to mongodb');
+  console.log('Successfully connected to mongodb');
 };
 
 /**
@@ -50,16 +57,16 @@ MongoConnect.prototype.defaultCallback = function (error) {
  * @return {string}
  * @private
  */
-MongoConnect.prototype.getMongoUri = function () {
-    let mongoUri = 'mongodb://';
+MongoConnect.prototype.getMongoUri = function() {
+  let mongoUri = 'mongodb://';
 
-    // if (this.system.hasDbCredentials()){
-    //      mongoUri += this.system.getDbUser() + ':' + this.system.getDbPass() + '@';
-    // }
+  // if (this.system.hasDbCredentials()){
+  //      mongoUri += this.system.getDbUser() + ':' + this.system.getDbPass() + '@';
+  // }
 
-    mongoUri += config.mongodb.hosts;
+  mongoUri += config.mongodb.hosts;
 
-    return mongoUri + '/' + config.mongodb.db;
+  return mongoUri + '/' + config.mongodb.db;
 };
 
 /**
@@ -68,12 +75,12 @@ MongoConnect.prototype.getMongoUri = function () {
  * @return {string}
  * @private
  */
-MongoConnect.prototype.getMongoHostAndDatabase = function () {
-    let mongoUri = 'mongodb://';
+MongoConnect.prototype.getMongoHostAndDatabase = function() {
+  let mongoUri = 'mongodb://';
 
-    mongoUri += config.mongodb.hosts;
+  mongoUri += config.mongodb.hosts;
 
-    return mongoUri + '/' + config.mongodb.db;
+  return mongoUri + '/' + config.mongodb.db;
 };
 
 module.exports = MongoConnect;

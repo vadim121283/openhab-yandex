@@ -8,8 +8,8 @@ const client = require('./client');
 
 module.exports = {
   site,
-    oauth2,
-    openhab,
-    user,
-    client,
+  oauth2,
+  openhab,
+  user,
+  client
 };

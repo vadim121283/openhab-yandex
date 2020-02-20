@@ -16,8 +16,8 @@ const https = require('https');
 const privateKey = fs.readFileSync(config.https.privateKey, 'utf8');
 const certificate = fs.readFileSync(config.https.certificate, 'utf8');
 const credentials = {
-    key: privateKey,
-    cert: certificate
+  key: privateKey,
+  cert: certificate
 };
 
 const mongoose = require('mongoose');
@@ -36,18 +36,24 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './views'));
 app.use(express.static('views'));
 app.use(cookieParser());
-app.use(bodyParser.json({
+app.use(
+  bodyParser.json({
     extended: false
-}));
-app.use(bodyParser.urlencoded({
+  })
+);
+app.use(
+  bodyParser.urlencoded({
     extended: true
-}));
+  })
+);
 app.use(errorHandler());
-app.use(session({
+app.use(
+  session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false
-}));
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 

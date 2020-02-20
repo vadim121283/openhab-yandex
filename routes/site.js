@@ -4,11 +4,15 @@
 const passport = require('passport');
 const login = require('connect-ensure-login');
 
-module.exports.index = (request, response) => response.send('knopkadom.ru OAuth 2.0 Server');
+module.exports.index = (request, response) =>
+  response.send('knopkadom.ru OAuth 2.0 Server');
 
 module.exports.loginForm = (request, response) => response.render('login');
 
-module.exports.login = passport.authenticate('local', { successReturnToOrRedirect: '/', failureRedirect: '/login' });
+module.exports.login = passport.authenticate('local', {
+  successReturnToOrRedirect: '/',
+  failureRedirect: '/login'
+});
 
 module.exports.logout = (request, response) => {
   request.logout();
@@ -17,5 +21,5 @@ module.exports.logout = (request, response) => {
 
 module.exports.account = [
   login.ensureLoggedIn(),
-  (request, response) => response.render('account', { user: request.user }),
+  (request, response) => response.render('account', { user: request.user })
 ];

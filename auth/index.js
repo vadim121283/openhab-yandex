@@ -3,7 +3,8 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
-const ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
+const ClientPasswordStrategy = require('passport-oauth2-client-password')
+  .Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const db = require('../db');
 /**
@@ -13,8 +14,8 @@ const db = require('../db');
  * Anytime a request is made to authorize an application, we must ensure that
  * a user is logged in before asking them to approve the request.
  */
-passport.use(new LocalStrategy(
-  (username, password, done) => {
+passport.use(
+  new LocalStrategy((username, password, done) => {
     console.log('Local Strategy Start find user');
     db.users.findByUsername(username, password, (error, user) => {
       if (error) return done(error);
@@ -29,10 +30,10 @@ passport.use(new LocalStrategy(
       console.log('LocalStrategy: OK');
       return done(null, user);
     });
-  }
-));
+  })
+);
 
-passport.serializeUser((user, done) =>  done(null, user._id));
+passport.serializeUser((user, done) => done(null, user._id));
 
 passport.deserializeUser((id, done) => {
   db.users.findById(id, (error, user) => done(error, user));
@@ -71,8 +72,8 @@ passport.use(new ClientPasswordStrategy(verifyClient));
  * application, which is issued an access token to make requests on behalf of
  * the authorizing user.
  */
-passport.use(new BearerStrategy(
-  (accessToken, done) => {
+passport.use(
+  new BearerStrategy((accessToken, done) => {
     db.accessTokens.find(accessToken, (error, token) => {
       if (error) return done(error);
       if (!token) return done(null, false);
@@ -83,7 +84,7 @@ passport.use(new BearerStrategy(
           if (!user) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,
           // and this is just for illustrative purposes.
-            console.log('BearerStrategyUser: OK');
+          console.log('BearerStrategyUser: OK');
           done(null, user, { scope: '*' });
         });
       } else {
@@ -94,10 +95,10 @@ passport.use(new BearerStrategy(
           if (!client) return done(null, false);
           // To keep this example simple, restricted scopes are not implemented,
           // and this is just for illustrative purposes.
-            console.log('BearerStrategyClient: OK');
+          console.log('BearerStrategyClient: OK');
           done(null, client, { scope: '*' });
         });
       }
     });
-  }
-));
+  })
+);

@@ -9,5 +9,5 @@ module.exports = {
   users,
   clients,
   accessTokens,
-  authorizationCodes,
+  authorizationCodes
 };
