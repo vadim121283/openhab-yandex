@@ -1,5 +1,3 @@
-'use strict';
-
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
@@ -30,7 +28,7 @@ passport.use(
       console.log('LocalStrategy: OK');
       return done(null, user);
     });
-  })
+  }),
 );
 
 passport.serializeUser((user, done) => done(null, user._id));
@@ -100,5 +98,5 @@ passport.use(
         });
       }
     });
-  })
+  }),
 );

@@ -1,9 +1,10 @@
 // Схема Устройства openHAB.
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
-var ObjectId = mongoose.SchemaTypes.ObjectId;
+const mongoose = require('mongoose');
 
-var ItemSchema = new Schema({
+const Schema = mongoose.Schema;
+const ObjectId = mongoose.SchemaTypes.ObjectId;
+
+const ItemSchema = new Schema({
   _id: ObjectId,
   user: { type: ObjectId, ref: 'User' }, // id from user
   name: String, // Item name
@@ -14,7 +15,7 @@ var ItemSchema = new Schema({
   prev_state: String, // Previous status value
   last_update: Date, // Date/time of last Item status update
   last_change: Date, // Date/time of last Item change
-  link: String // URL to API this device
+  link: String, // URL to API this device
 });
 
 ItemSchema.index({ user: 1, name: 1 }, { unique: true });

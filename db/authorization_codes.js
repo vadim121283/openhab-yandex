@@ -1,5 +1,3 @@
-'use strict';
-
 const codes = {};
 
 module.exports.find = (key, done) => {
@@ -16,7 +14,7 @@ module.exports.save = (
   redirectUri,
   userId,
   userName,
-  done
+  done,
 ) => {
   codes[code] = { clientId, yClientId, redirectUri, userId, userName };
   done();

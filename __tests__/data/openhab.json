@@ -15,8 +15,13 @@
           "name": "KidsRoomLight_Power1",
           "label": "Детская свет",
           "category": "light",
-          "tags": ["Lighting"],
-          "groupNames": ["KidsRoom", "gLight"]
+          "tags": [
+            "Lighting"
+          ],
+          "groupNames": [
+            "KidsRoom",
+            "gLight"
+          ]
         },
         {
           "link": "http://localhost:3000/rest/items/MagicHome2_ch1",
@@ -26,8 +31,13 @@
           "name": "MagicHome2_ch1",
           "label": "Настольная лампа",
           "category": "light",
-          "tags": ["Lighting"],
-          "groupNames": ["Bedroom", "gLight"]
+          "tags": [
+            "Lighting"
+          ],
+          "groupNames": [
+            "Bedroom",
+            "gLight"
+          ]
         },
         {
           "link": "http://localhost:3000/rest/items/MagicHome3_Color",
@@ -37,8 +47,13 @@
           "name": "MagicHome3_Color",
           "label": "Подсветка стола",
           "category": "color",
-          "tags": ["Lighting"],
-          "groupNames": ["Bedroom", "gLight"]
+          "tags": [
+            "Lighting"
+          ],
+          "groupNames": [
+            "Bedroom",
+            "gLight"
+          ]
         },
         {
           "link": "http://localhost:3000/rest/items/KitchenLight_Power1",
@@ -53,8 +68,13 @@
           "name": "KitchenLight_Power1",
           "label": "Кухня свет",
           "category": "light",
-          "tags": ["Lighting"],
-          "groupNames": ["Kitchen", "gLight"]
+          "tags": [
+            "Lighting"
+          ],
+          "groupNames": [
+            "Kitchen",
+            "gLight"
+          ]
         },
         {
           "link": "http://localhost:3000/rest/items/BedroomLight_Power2",
@@ -69,8 +89,13 @@
           "name": "BedroomLight_Power2",
           "label": "Спальня Шар",
           "category": "light",
-          "tags": ["Lighting"],
-          "groupNames": ["Bedroom", "gLight"]
+          "tags": [
+            "Lighting"
+          ],
+          "groupNames": [
+            "Bedroom",
+            "gLight"
+          ]
         }
       ]
     },
@@ -89,8 +114,13 @@
           "name": "SmartSocket1",
           "label": "Умная розетка",
           "category": "poweroutlet_eu",
-          "tags": ["Switchable"],
-          "groupNames": ["Home", "gOutlet"]
+          "tags": [
+            "Switchable"
+          ],
+          "groupNames": [
+            "Home",
+            "gOutlet"
+          ]
         }
       ]
     },
@@ -108,8 +138,13 @@
         "name": "KidsRoomLight_Power1",
         "label": "Детская свет",
         "category": "light",
-        "tags": ["Lighting"],
-        "groupNames": ["KidsRoom", "gLight"]
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "KidsRoom",
+          "gLight"
+        ]
       }
     },
     {
@@ -121,8 +156,13 @@
         "name": "MagicHome2_ch1",
         "label": "Настольная лампа",
         "category": "light",
-        "tags": ["Lighting"],
-        "groupNames": ["Bedroom", "gLight"]
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Bedroom",
+          "gLight"
+        ]
       }
     },
     {
@@ -134,8 +174,13 @@
         "name": "MagicHome3_Color",
         "label": "Подсветка стола",
         "category": "color",
-        "tags": ["Lighting"],
-        "groupNames": ["Bedroom", "gLight"]
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Bedroom",
+          "gLight"
+        ]
       }
     },
     {
@@ -152,8 +197,13 @@
         "name": "KitchenLight_Power1",
         "label": "Кухня свет",
         "category": "light",
-        "tags": ["Lighting"],
-        "groupNames": ["Kitchen", "gLight"]
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Kitchen",
+          "gLight"
+        ]
       }
     },
     {
@@ -170,8 +220,13 @@
         "name": "BedroomLight_Power2",
         "label": "Спальня Шар",
         "category": "light",
-        "tags": ["Lighting"],
-        "groupNames": ["Bedroom", "gLight"]
+        "tags": [
+          "Lighting"
+        ],
+        "groupNames": [
+          "Bedroom",
+          "gLight"
+        ]
       }
     },
     {
@@ -188,12 +243,21 @@
         "name": "SmartSocket1",
         "label": "Умная розетка",
         "category": "poweroutlet_eu",
-        "tags": ["Switchable"],
-        "groupNames": ["Home", "gOutlet"]
+        "tags": [
+          "Switchable"
+        ],
+        "groupNames": [
+          "Home",
+          "gOutlet"
+        ]
       }
     }
   ],
-  "uuid": [{ "uuid": "sample uuid" }],
+  "uuid": [
+    {
+      "uuid": "sample uuid"
+    }
+  ],
   "Room": [
     {
       "editable": false,
@@ -223,7 +287,10 @@
       "label": "Детская свет",
       "category": "light",
       "tags": "Lighting",
-      "groupNames": ["KidsRoom", "gLight"]
+      "groupNames": [
+        "KidsRoom",
+        "gLight"
+      ]
     }
   ]
 }

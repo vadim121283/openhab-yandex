@@ -1,5 +1,3 @@
-'use strict';
-
 const passport = require('passport');
 const openhab = require('./openhab');
 const utils = require('../utils');
@@ -12,9 +10,9 @@ module.exports.info = [
     response.json({
       user_id: request.user._id,
       name: request.user.name,
-      scope: request.authInfo.scope
+      scope: request.authInfo.scope,
     });
-  }
+  },
 ];
 
 module.exports.ping = [
@@ -22,28 +20,29 @@ module.exports.ping = [
   (request, response) => {
     response.status(200);
     response.send('OK');
-  }
+  },
 ];
 
 // Выдача массива devices
 module.exports.devices = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-    openhab.getDevices(request.user).then(devices => {
-      let r = {
-        request_id: utils.getUid(16),
-        payload: {
-          user_id: request.user._id,
-          devices: []
+    openhab.getDevices(request.user)
+      .then((devices) => {
+        const r = {
+          request_id: utils.getUid(16),
+          payload: {
+            user_id: request.user._id,
+            devices: [],
+          },
+        };
+        for (const i in devices) {
+          r.payload.devices.push(devices[i].getInfo());
         }
-      };
-      for (let i in devices) {
-        r.payload.devices.push(devices[i].getInfo());
-      }
-      response.status(200);
-      response.send(r);
-    });
-  }
+        response.status(200);
+        response.send(r);
+      });
+  },
 ];
 
 // Выдача состояния устройств
@@ -52,52 +51,52 @@ module.exports.query = [
   (request, response) => {
     openhab
       .getDevicesQuery(request.user, request.body.devices)
-      .then(devices => {
-        //console.log(devices);
-        console.log('BODY: ' + JSON.stringify(request.body));
+      .then((devices) => {
+        // console.log(devices);
+        console.log(`BODY: ${JSON.stringify(request.body)}`);
         const r = {
           request_id: utils.getUid(16),
           payload: {
-            devices: []
-          }
+            devices: [],
+          },
         };
-        for (let i in devices) {
+        for (const i in devices) {
           r.payload.devices.push(devices[i].getInfo());
-          //console.log(r);
+          // console.log(r);
         }
-        console.log('RES: ' + JSON.stringify(r));
+        console.log(`RES: ${JSON.stringify(r)}`);
         response.send(r);
       });
-  }
+  },
 ];
 
 // Изменение состояния устройств
 module.exports.action = [
   passport.authenticate('bearer', { session: true }),
   (request, response) => {
-    //console.log(JSON.stringify(request.body.payload));
+    // console.log(JSON.stringify(request.body.payload));
     openhab
       .setDevices(request.user, request.body.payload.devices)
-      .then(devices => {
-        //console.log(devices);
-        //console.log('BODY: ' + JSON.stringify(request.body));
-        let r = {
+      .then((devices) => {
+        // console.log(devices);
+        // console.log('BODY: ' + JSON.stringify(request.body));
+        const r = {
           request_id: utils.getUid(16),
           payload: {
-            devices: []
-          }
+            devices: [],
+          },
         };
 
-        for (let i in devices) {
-          let id = devices[i].id;
-          let capabilities = devices[i].capabilities;
+        for (const i in devices) {
+          const id = devices[i].id;
+          const capabilities = devices[i].capabilities;
 
-          r.payload.devices.push({ id: id, capabilities: capabilities });
+          r.payload.devices.push({ id, capabilities });
         }
-        //console.log('RES: ' + JSON.stringify(r));
+        // console.log('RES: ' + JSON.stringify(r));
         response.send(r);
       });
-  }
+  },
 ];
 
 // Отключение пользователя разъединение аккаунтов
@@ -107,5 +106,5 @@ module.exports.unlink = [
     db.users.deleteUser(request.user.username);
     db.accessTokens.deleteToken(request.user._id);
     response.status(200);
-  }
+  },
 ];

@@ -1,5 +1,3 @@
-'use strict';
-
 const express = require('express');
 const ejs = require('ejs');
 const path = require('path');
@@ -11,24 +9,25 @@ const passport = require('passport');
 const routes = require('./routes');
 const config = require('./config');
 const fs = require('fs');
+
 const app = express();
 const https = require('https');
+
 const privateKey = fs.readFileSync(config.https.privateKey, 'utf8');
 const certificate = fs.readFileSync(config.https.certificate, 'utf8');
 const credentials = {
   key: privateKey,
-  cert: certificate
+  cert: certificate,
 };
 
 const mongoose = require('mongoose');
 const MongoConnect = require('./db/mongoconnect');
-let mongoConnect;
 
 // HTTPS server
 const httpsServer = https.createServer(credentials, app);
 
 // MongoDB
-mongoConnect = new MongoConnect();
+const mongoConnect = new MongoConnect();
 mongoConnect.connect(mongoose);
 
 app.engine('ejs', ejs.__express);
@@ -38,27 +37,28 @@ app.use(express.static('views'));
 app.use(cookieParser());
 app.use(
   bodyParser.json({
-    extended: false
-  })
+    extended: false,
+  }),
 );
 app.use(
   bodyParser.urlencoded({
-    extended: true
-  })
+    extended: true,
+  }),
 );
 app.use(errorHandler());
 app.use(
   session({
     secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: false
-  })
+    saveUninitialized: false,
+  }),
 );
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Passport configuration API urls
 require('./auth');
+
 app.get('/', routes.site.index);
 app.get('/login', routes.site.loginForm);
 app.post('/login', routes.site.login);

@@ -1,5 +1,3 @@
-'use strict';
-
 // Выдаем данные клиента
 const passport = require('passport');
 
@@ -13,7 +11,7 @@ module.exports.info = [
     response.json({
       client_id: request.user._id,
       name: request.user.name,
-      scope: request.authInfo.scope
+      scope: request.authInfo.scope,
     });
-  }
+  },
 ];

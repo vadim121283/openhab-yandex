@@ -8,7 +8,7 @@ class device {
       room: options.room || '',
       type: options.type || 'devices.types.light',
       custom_data: options.custom_data,
-      capabilities: options.capabilities
+      capabilities: options.capabilities,
     };
     // global.devices.push(this);
   }
