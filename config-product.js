@@ -3,7 +3,7 @@
 // 3. Genera
 module.exports = {
   openhab: {
-    host: ['https://myopenhab.org'],
+    host: ['https://home.myopenhab.org'],
   },
   mongodb: {
     hosts: ['127.0.0.1'],
