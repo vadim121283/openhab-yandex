@@ -38,8 +38,13 @@ chown -R root:root /opt/openhab-yandex
 cd /opt/openhab-yandex
 npm install
 
+Установите MongoDB (если возникает ошибка, возьмите версию 4):
+Debian: https://baks.dev/article/debian/how-to-install-mongodb-on-debian-10-linux
+CentOS: https://www.8host.com/blog/ustanovka-mongodb-v-centos-7/
+
 Запускаем мост (Перед запуском мост нужно настроить)
 npm start
+
 
 ## Автозапуск
 
@@ -79,6 +84,11 @@ service openhabyandex restart
 
 ## Создание своего навыка
 
+URL авторизации: https://вашдомен/dialog/authorize
+После запуска откроется окно авторизации "ВВЕДИТЕ УЧЕТНЫЕ ДАННЫЕ С MYOPENHAB.ORG"
+
+URL для получения токена: https://вашдомен/oauth/token
+
 Заходим на https://dialogs.yandex.ru/developer/skills => Создать диалог => Умный дом
 
 Название: Любое
@@ -88,9 +98,6 @@ Endpoint URL: https://вашдомен/provider
 Нажимаем "Добавить новую" связку
 Название: Любое
 Идентификатор и секрет : можно добавить в базе данных MongoDB см. модель.
-
-URL авторизации: https://вашдомен/dialog/authorize
-URL для получения токена: https://вашдомен/oauth/token
 
 Сохраняем связку и выбираем её в навыке. Выбираем иконку, пишем описание, нажимаем "Сохранить".
 Дальше жмём "На модерацию" и сразу "Опубликовать". Готово.
