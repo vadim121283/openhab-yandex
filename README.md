@@ -50,8 +50,11 @@ npm install
 
 
 Установите MongoDB (если возникает ошибка, возьмите версию 4):
+
 Debian: https://baks.dev/article/debian/how-to-install-mongodb-on-debian-10-linux
+
 CentOS: https://www.8host.com/blog/ustanovka-mongodb-v-centos-7/
+
 
 Запускаем мост (Перед запуском мост нужно настроить)
 npm start
