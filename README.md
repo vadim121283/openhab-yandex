@@ -56,11 +56,17 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/npm start
+
 WorkingDirectory=/opt/openhab-yandex
+
 StandardOutput=inherit
+
 StandardError=inherit
+
 Restart=always
+
 User=root
+
 
 [Install]
 WantedBy=multi-user.target
