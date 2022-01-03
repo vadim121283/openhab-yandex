@@ -27,19 +27,38 @@
 ## Установка
 
 Настраиваем репозиторий Node JS
+
 curl -sL https://deb.nodesource.com/setup_10.x | bash -
+
 Устанавливаем необходимые компоненты
+
 apt-get install -y nodejs git make g++ gcc build-essential
+
 Копируем файлы
+
 git clone https://github.com/vadim121283/openhab-yandex.git /opt/openhab-yandex
+
 Задаём права.
+
 chown -R root:root /opt/openhab-yandex
+
 Заходим в директорию и запускаем установку
+
 cd /opt/openhab-yandex
+
 npm install
+
+
+Установите MongoDB (если возникает ошибка, возьмите версию 4):
+
+Debian: https://baks.dev/article/debian/how-to-install-mongodb-on-debian-10-linux
+
+CentOS: https://www.8host.com/blog/ustanovka-mongodb-v-centos-7/
+
 
 Запускаем мост (Перед запуском мост нужно настроить)
 npm start
+
 
 ## Автозапуск
 
@@ -51,11 +70,17 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/npm start
+
 WorkingDirectory=/opt/openhab-yandex
+
 StandardOutput=inherit
+
 StandardError=inherit
+
 Restart=always
+
 User=root
+
 
 [Install]
 WantedBy=multi-user.target
@@ -79,6 +104,11 @@ service openhabyandex restart
 
 ## Создание своего навыка
 
+URL авторизации: https://вашдомен/dialog/authorize
+После запуска откроется окно авторизации "ВВЕДИТЕ УЧЕТНЫЕ ДАННЫЕ С MYOPENHAB.ORG"
+
+URL для получения токена: https://вашдомен/oauth/token
+
 Заходим на https://dialogs.yandex.ru/developer/skills => Создать диалог => Умный дом
 
 Название: Любое
@@ -88,9 +118,6 @@ Endpoint URL: https://вашдомен/provider
 Нажимаем "Добавить новую" связку
 Название: Любое
 Идентификатор и секрет : можно добавить в базе данных MongoDB см. модель.
-
-URL авторизации: https://вашдомен/dialog/authorize
-URL для получения токена: https://вашдомен/oauth/token
 
 Сохраняем связку и выбираем её в навыке. Выбираем иконку, пишем описание, нажимаем "Сохранить".
 Дальше жмём "На модерацию" и сразу "Опубликовать". Готово.
